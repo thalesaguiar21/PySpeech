@@ -2,17 +2,23 @@ import numpy as np
 from scipy.io import wavfile
 from math import ceil, cos, pi, sqrt
 from folder import find_wav_files
+import pdb
 
 
 def process_voice_dataset(folder, emph_rate, frame_size, frame_stride, nfft):
     audio_files_path = find_wav_files(folder)
     qtd_files = len(audio_files_path)
     crr_audio = 1
+    onfreq_signals = []
     for audio_path in audio_files_path:
         print("Processing audio ", crr_audio, "/", qtd_files, "...",
               end="\r", sep="")
-        _process_signal(audio_path)
+        onfreq_signals.append(
+            _process_signal(audio_path, emph_rate,
+                            frame_size, frame_stride, nfft)
+        )
         crr_audio += 1
+    return onfreq_signals
 
 
 def _process_signal(audio, emph_rate, frame_size, frame_stride, nfft):
@@ -54,7 +60,26 @@ def fft(frames, nfft):
     return 1.0 / nfft * mag_spectrum ** 2.0
 
 
-def dct_bi(signal):
+def dctII_onedim(signal):
+    indices = np.array([np.arange(signal.size)])
+    arg = np.dot(pi * indices.T / (2 * signal.size), 2 * indices + 1)
+    return np.dot(signal, np.cos(arg.T))
+
+
+def dctII_onedim_ortho(signal):
+    dcts = dctII_onedim(signal)
+    dcts[0] *= 1 / sqrt(2)
+    return sqrt(2 / signal.size) * dctII_onedim(signal)
+
+
+def _gamma1d(i):
+    if i == 0:
+        return 1 / sqrt(2)
+    else:
+        return 1
+
+
+def dct_2d(signal):
     if len(signal.shape) != 2:
         raise ValueError('Signal must be 2-dimensional!')
 
@@ -67,7 +92,7 @@ def dct_bi(signal):
     ycosines = np.cos(pi / yN * (y_range + 0.5) * y_range.T)
 
     sep = 2 * sqrt(1 / (xN * yN))
-    gammas = np.array([[_gamma(i, j) for j in range(yN)] for i in range(xN)])
+    gammas = np.array([[_gamma2d(i, j) for j in range(yN)] for i in range(xN)])
 
     for i in range(xN):
         for j in range(yN):
@@ -78,13 +103,10 @@ def dct_bi(signal):
     return sep * mfcc
 
 
-def _gamma(i, j):
+def _gamma2d(i, j):
     if i == 0 and j == 0:
         return 1 / 2
     elif (i > 0 and j == 0) or (i == 0 and j > 0):
         return 1 / sqrt(2)
     else:
         return 1
-
-
-process_voice_dataset('C:\\DATASETS\\english_small\\train\\voice')

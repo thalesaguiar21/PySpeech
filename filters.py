@@ -23,6 +23,7 @@ def compute_filter_banks(pow_frames, qtd_filters, sample_rate, nfft):
     filter_banks = np.dot(pow_frames, fbank.T)
     filter_banks = np.where(
         filter_banks == 0, np.finfo(float).eps, filter_banks)
+    return filter_banks
 
 
 def hertz_to_mel(sample_rate):
