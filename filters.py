@@ -35,7 +35,3 @@ def hertz_to_mel(sample_rate):
 def mel_points_to_hertz(points):
     # Converts a signal from Mel to Hz
     return 700 * (10 ** (points / 2595) - 1)
-
-
-def mean_normalization(fbanks):
-    fbanks -= np.mean(fbanks, axis=0) + 1e-8
