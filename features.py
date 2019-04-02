@@ -13,7 +13,7 @@ def mfcc_means(frames, qtd_ceps):
     return np.mean(mfcc(frames, qtd_ceps), axis=0)
 
 
-def deltas(mfccs):
+def mfcc_deltas(mfccs):
     # Calculate Delta or Delta-DEltas from MFCC vector
     n_frames = mfccs.shape[1]
     f_frames = mfccs[:, 1:] - mfccs[:, :-1]
@@ -22,6 +22,24 @@ def deltas(mfccs):
     for i in range(f_frames.shape[0]):
         f_frames[i] *= coef
     return np.sum(f_frames, axis=1)
+
+
+def log_energy(windowed_frames):
+    epsilon = 10e-5
+    frame_energies = []
+    frame_size = windowed_frames.shape[1]
+    for frame in windowed_frames:
+        arg = (1.0 / frame_size) * frame ** 2
+        frame_energies.append(10 * np.log10(epsilon + arg.sum()))
+    return np.array(frame_energies)
+
+
+def energy_delta(log_energies):
+    qtd_energies = log_energies.size
+    forwarded = log_energies[1:] - log_energies[:-1]
+    denom = 2 * sum([i ** 2.0 for i in range(qtd_energies - 1)])
+    coefs = np.array([i / denom for i in range(qtd_energies - 1)])
+    return forwarded * coefs
 
 
 def plp():
