@@ -4,7 +4,7 @@ from math import ceil, cos, pi, sqrt
 from folder import find_wav_files
 
 
-def process_voice_dataset(folder, emph_rate, frame_size, frame_stride):
+def window_voice_dataset(folder, emph_rate, frame_size, frame_stride):
     audio_files_path = find_wav_files(folder)
     qtd_files = len(audio_files_path)
     crr_audio = 1
@@ -13,13 +13,13 @@ def process_voice_dataset(folder, emph_rate, frame_size, frame_stride):
         print("Processing audio ", crr_audio, "/", qtd_files, "...",
               end="\r", sep="")
         onfreq_signals.append(
-            _process_signal(audio_path, emph_rate, frame_size, frame_stride)
+            _window_signal(audio_path, emph_rate, frame_size, frame_stride)
         )
         crr_audio += 1
     return onfreq_signals
 
 
-def _process_signal(audio, emph_rate, frame_size, frame_stride):
+def _window_signal(audio, emph_rate, frame_size, frame_stride):
     rate, signal = wavfile.read(audio)
     emph_signal = _preemph(signal, emph_rate)
     frames = _split(rate, emph_signal, frame_size, frame_stride)

@@ -1,5 +1,5 @@
 from processing import process_voice_dataset, fft
-from features import mfcc, log_energy, energy_delta
+from features import mfcc
 from filters import compute_filter_banks
 import pdb
 
@@ -16,10 +16,6 @@ total_fb = len(windowed_signals)
 print('')
 
 print('Computing log energy')
-energies = log_energy(windowed_signals[0])
-e_delta = energy_delta(energies)
-e_delta2 = energy_delta(e_delta)
-pdb.set_trace()
 
 for frames in windowed_signals:
     print('AUDIO ', proc_fb, '/', total_fb, '...', end='\r', sep='')
