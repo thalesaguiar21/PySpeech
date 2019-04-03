@@ -1,8 +1,5 @@
-<p align="center">
-  <img width="100" height="100" src="/images/pyspeech_logo.png">
-</p>
-
 # PySpeech
+<img align="left" width="150" src="/images/pyspeech_logo.png">
 Several signal processing and feature extraction functions for automatic speech to text conversion, i.e Automatic Speech Recognition (ASR).
 
 ## To-do
