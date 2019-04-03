@@ -9,9 +9,10 @@ changes to code will be frequent.
 - [ ] Add other filters
 - [ ] Implement the skeleton features in `features.py` module
 - [ ] Add testing folder
-- [ ] Change project structure
+- [X] Change project structure
 - [X] Move signal transformations from `processing.py` module
 - [ ] Improve interface
+- [ ] Fix mfcc log error
 
 ## Basic usage
 For processing, that is, to apply a preemphasis, split and apply a windowing 
@@ -19,9 +20,8 @@ function to the speech signal you can process a single audio
 
 ```python
 import pyspeech.processing as spproc
-# To process a single file
-windowed_signals = spporc.windoed_signal(
-    'C:\\DATASETS\\english_small\\train\\voice\\example.wav',
+windowed_signals = spproc.windowed_signal(
+    'C:\\DATASETS\\english_small\\train\\voice',
     0.97,
     25,
     10
@@ -32,7 +32,7 @@ Or a whole dataset by passing the folder full path
 ```python
 import pyspeech.processing as spproc
 # To process the whole dataset
-windowed_signals = spporc.process_voice_dataset(
+windowed_signals = spproc.window_voice_dataset(
     'C:\\DATASETS\\english_small\\train\\voice',
     0.97,
     25,
@@ -45,21 +45,20 @@ module and features from `features.py` modules. As an example:
 
 ```python
 import pyspeech.processing as spproc
-import pyspeech.filters as spfilt
 import pyspeech.features as spfeat
-# To process the whole dataset
-windowed_signals = spporc.process_voice_dataset(
+import pyspeech.filters as spfilt
+import pyspeech.transform as sptrans
+windowed_signals = spproc.window_voice_dataset(
     'C:\\DATASETS\\english_small\\train\\voice',
     0.97,
     25,
     10
 )
-# Apply filter to each frame
 for frames in windowed_signals:
-    pow_frames = spproc.fft(frames, 512)
+    pow_frames = sptrans.fft(frames, 512)
     fbanks = spfilt.compute_filter_banks(pow_frames, 40, 16000, 512)
     spfeat.mfcc(fbanks, 12)
     proc_fb += 1
 ```
 
-You can check the whole code in `sample.py` file.
+You can check the whole code in `example.py` file.

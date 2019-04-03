@@ -1,10 +1,10 @@
 import numpy as np
-from processing import dctII_onedim
+import pyspeech.transform as sptrans
 
 
 def mfcc(frames, qtd_ceps):
     # Applies a Discrete Correlation Transforma(DCT) on Filter Banks
-    mfccs = np.array([np.log(dctII_onedim(frame)) for frame in frames])
+    mfccs = np.array([np.log(sptrans.dctII_onedim(frame)) for frame in frames])
     return mfccs[:, 1:qtd_ceps + 1]
 
 

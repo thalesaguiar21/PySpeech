@@ -1,11 +1,11 @@
 import numpy as np
 import math
+import pyspeech.folder as spfold
 from scipy.io import wavfile
-from folder import find_wav_files
 
 
-def window_voice_dataset(folder, emph_rate, frame_size, frame_stride):
-    audio_files_path = find_wav_files(folder)
+def window_voice_dataset(data_path, emph_rate, frame_size, frame_stride):
+    audio_files_path = spfold.find_wav_files(data_path)
     qtd_files = len(audio_files_path)
     crr_audio = 1
     onfreq_signals = []
