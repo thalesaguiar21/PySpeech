@@ -1,5 +1,5 @@
 <p align="center">
-  <img width="300" height="300" src="/images/pyspeech_logo.png">
+  <img width="100" height="100" src="/images/pyspeech_logo.png">
 </p>
 
 # PySpeech
