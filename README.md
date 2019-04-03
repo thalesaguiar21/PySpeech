@@ -1,6 +1,6 @@
 # PySpeech
 <img align="left" width="150" src="/images/pyspeech_logo.png">
-Several signal processing and feature extraction functions for automatic speech to text conversion, i.e Automatic Speech Recognition (ASR).
+Several signal processing and feature extraction functions for automatic speech to text conversion, i.e Automatic Speech Recognition (ASR). This project aims to be a compilation of speech processing methods to facilitate the development of feature extraction techniques for Speech Recognition (specially for speech-to-text). It is still under testing and development, in the following section you will find issues and basic usage of this library.
 
 ## To-do
 Notice that this project is still on developemnt, therefore bugs may occur and
