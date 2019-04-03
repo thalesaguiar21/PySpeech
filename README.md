@@ -1,4 +1,4 @@
-![pyspeech logo](/images/pyspeech_logo.png)
+<img align="left" width="100" height="100" src="https://github.com/thalesaguiar21/pyspeech/images/pyspeech_logo.png">
 
 # Project: pyspeech
 Several signal processing and feature extraction functions for automatic speech to text conversion, i.e Automatic Speech Recognition (ASR).
@@ -19,6 +19,7 @@ For processing, that is, to apply a preemphasis, split and apply a windowing
 function to the speech signal you can process a single audio
 
 ```python
+import pyspeech.processing as spproc
 # To process a single file
 windowed_signals = spporc.windoed_signal(
     'C:\\DATASETS\\english_small\\train\\voice\\example.wav',
