@@ -1,5 +1,5 @@
 import numpy as np
-from math import log10
+import math
 
 
 def compute_filter_banks(pow_frames, qtd_filters, sample_rate, nfft):
@@ -29,7 +29,7 @@ def compute_filter_banks(pow_frames, qtd_filters, sample_rate, nfft):
 def hertz_to_mel(sample_rate):
     # Converts a signal from Hz to Mel
     srate = sample_rate / 2.0
-    return 2595.0 * log10(1.0 + srate / 700.0)
+    return 2595.0 * math.log10(1.0 + srate / 700.0)
 
 
 def mel_points_to_hertz(points):
