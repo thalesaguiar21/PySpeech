@@ -10,7 +10,7 @@ changes to code will be frequent.
 - [ ] Implement the skeleton features in `features.py` module
 - [ ] Add testing folder
 - [ ] Change project structure
-- [ ] Move signal transformations from `processing.py` module
+- [X] Move signal transformations from `processing.py` module
 - [ ] Improve interface
 
 ## Basic usage
