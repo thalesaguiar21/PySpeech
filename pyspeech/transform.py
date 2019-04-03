@@ -10,7 +10,7 @@ def fft(frames, nfft):
 def dctII_onedim(signal):
     indices = np.array([np.arange(signal.size)])
     arg = np.dot(math.pi * indices.T / (2 * signal.size), 2 * indices + 1)
-    return np.dot(signal, np.cos(arg.T))
+    return np.absolute(np.dot(signal, np.cos(arg.T)))
 
 
 def dctII_onedim_ortho(signal):

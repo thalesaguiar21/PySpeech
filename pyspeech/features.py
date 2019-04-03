@@ -1,10 +1,12 @@
 import numpy as np
 import pyspeech.transform as sptrans
+import pdb
 
 
 def mfcc(frames, qtd_ceps):
     # Applies a Discrete Correlation Transforma(DCT) on Filter Banks
-    mfccs = np.array([np.log(sptrans.dctII_onedim(frame)) for frame in frames])
+    MFs = np.array([np.absolute(sptrans.dctII_onedim(f)) for f in frames])
+    mfccs = np.log(MFs)
     return mfccs[:, 1:qtd_ceps + 1]
 
 
