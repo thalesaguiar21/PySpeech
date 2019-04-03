@@ -13,13 +13,13 @@ def window_voice_dataset(folder, emph_rate, frame_size, frame_stride):
         print("Processing audio ", crr_audio, "/", qtd_files, "...",
               end="\r", sep="")
         onfreq_signals.append(
-            _window_signal(audio_path, emph_rate, frame_size, frame_stride)
+            windowed_signal(audio_path, emph_rate, frame_size, frame_stride)
         )
         crr_audio += 1
     return onfreq_signals
 
 
-def _window_signal(audio, emph_rate, frame_size, frame_stride):
+def windowed_signal(audio, emph_rate, frame_size, frame_stride):
     rate, signal = wavfile.read(audio)
     emph_signal = _preemph(signal, emph_rate)
     frames = _split(rate, emph_signal, frame_size, frame_stride)

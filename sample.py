@@ -13,9 +13,6 @@ windowed_signals = process_voice_dataset(
 
 proc_fb = 1
 total_fb = len(windowed_signals)
-print('')
-
-print('Computing log energy')
 
 for frames in windowed_signals:
     print('AUDIO ', proc_fb, '/', total_fb, '...', end='\r', sep='')
