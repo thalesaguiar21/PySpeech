@@ -2,7 +2,7 @@ import numpy as np
 import math
 
 
-def mel_filer_banks(pow_frames, qtd_filters, samplerate, nfft):
+def mel_banks(pow_frames, qtd_filters, samplerate, nfft):
     low_freq_mel = 0
     high_freq_mel = hertz_to_mel(samplerate)
     # Center points of triangular filters
@@ -26,7 +26,7 @@ def mel_filer_banks(pow_frames, qtd_filters, samplerate, nfft):
     return filter_banks
 
 
-def bark_filter_banks():
+def bark_banks():
     pass
 
 

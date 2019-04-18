@@ -1,6 +1,5 @@
 import numpy as np
 import pyspeech.transform as sptrans
-import pdb
 
 
 def mfcc(frames, qtd_ceps):
