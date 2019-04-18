@@ -2,13 +2,13 @@ import numpy as np
 import math
 
 
-def compute_filter_banks(pow_frames, qtd_filters, sample_rate, nfft):
+def mel_filer_banks(pow_frames, qtd_filters, samplerate, nfft):
     low_freq_mel = 0
-    high_freq_mel = hertz_to_mel(sample_rate)
+    high_freq_mel = hertz_to_mel(samplerate)
     # Center points of triangular filters
     mel_points = np.linspace(low_freq_mel, high_freq_mel, qtd_filters + 2)
     hz_points = mel_points_to_hertz(mel_points)
-    bin = np.floor((nfft + 1) * hz_points / sample_rate)
+    bin = np.floor((nfft + 1) * hz_points / samplerate)
 
     fbank = np.zeros((qtd_filters, int(np.floor(nfft / 2 + 1))))
     for m in range(1, qtd_filters + 1):
@@ -26,9 +26,13 @@ def compute_filter_banks(pow_frames, qtd_filters, sample_rate, nfft):
     return filter_banks
 
 
-def hertz_to_mel(sample_rate):
+def bark_filter_banks():
+    pass
+
+
+def hertz_to_mel(samplerate):
     # Converts a signal from Hz to Mel
-    srate = sample_rate / 2.0
+    srate = samplerate / 2.0
     return 2595.0 * math.log10(1.0 + srate / 700.0)
 
 
