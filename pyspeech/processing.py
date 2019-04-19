@@ -1,7 +1,14 @@
 import numpy as np
 import math
 import pyspeech.folder as spfold
+import pyspeech.transform as sptrans
 from scipy.io import wavfile
+
+
+def powerspectrum(datapath, emphasis, frame_size, frame_stride):
+    windowed_signal = window_voice_dataset(
+        datapath, emphasis, frame_size, frame_stride)
+    return sptrans.fft(windowed_signal, 512)
 
 
 def window_voice_dataset(data_path, emph_rate, frame_size, frame_stride):
@@ -11,11 +18,12 @@ def window_voice_dataset(data_path, emph_rate, frame_size, frame_stride):
     onfreq_signals = []
     for audio_path in audio_files_path:
         print("Processing audio ", crr_audio, "/", qtd_files, "...",
-              end="\r", sep="")
+              end="\r", sep="", flush=True)
         onfreq_signals.append(
             windowed_signal(audio_path, emph_rate, frame_size, frame_stride)
         )
         crr_audio += 1
+    print()
     return onfreq_signals
 
 

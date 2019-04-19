@@ -6,12 +6,12 @@ Several signal processing and feature extraction functions for automatic speech 
 Notice that this project is still on developemnt, therefore bugs may occur and
 changes to code will be frequent.
 
-- [ ] Add other filters
-- [ ] Implement the skeleton features in `features.py` module
+- [X] Add bark filter bank
 - [ ] Add testing folder
+- [ ] Compute minimum NFFT to better process signal
+- [ ] Generalise delta computaing for 1D arrays
 - [X] Change project structure
 - [X] Move signal transformations from `processing.py` module
-- [ ] Improve interface
 - [X] Fix mfcc log error
 
 ## Basic usage
