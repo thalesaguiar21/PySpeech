@@ -53,3 +53,7 @@ def _split(sample_rate, signal, frame_size, frame_stride):
 
 def _hamming_window(frames, length):
     frames *= 0.54 - 0.46 * math.cos(2.0 * math.pi / (length))
+
+
+def equal_loudness_preemphasis():
+    pass

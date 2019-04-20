@@ -95,6 +95,12 @@ def log_energy(windowed_frames):
 
 
 def plp():
+    # power spectrum
+    # bark filter banks
+    # equal-loudness preemphasis
+    # intensity-to-loudness
+    # linear prediction
+    # cepstrum computation
     raise NotImplementedError()
 
 
