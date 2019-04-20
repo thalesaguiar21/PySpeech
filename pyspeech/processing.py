@@ -13,17 +13,11 @@ def powerspectrum(datapath, emphasis, frame_size, frame_stride):
 
 def window_voice_dataset(data_path, emph_rate, frame_size, frame_stride):
     audio_files_path = spfold.find_wav_files(data_path)
-    qtd_files = len(audio_files_path)
-    crr_audio = 1
     onfreq_signals = []
     for audio_path in audio_files_path:
-        print("Processing audio ", crr_audio, "/", qtd_files, "...",
-              end="\r", sep="", flush=True)
         onfreq_signals.append(
             windowed_signal(audio_path, emph_rate, frame_size, frame_stride)
         )
-        crr_audio += 1
-    print()
     return onfreq_signals
 
 

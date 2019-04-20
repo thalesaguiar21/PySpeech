@@ -13,6 +13,7 @@ changes to code will be frequent.
 - [X] Change project structure
 - [X] Move signal transformations from `processing.py` module
 - [X] Fix mfcc log error
+- [ ] Add better logging messages
 
 ## Basic usage
 For processing, that is, to apply a preemphasis, split and apply a windowing 
