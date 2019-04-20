@@ -22,28 +22,6 @@ def bark_banks(pow_frames, qtd_filters, samplerate, nfft):
     return _bark_filter_banks(pow_frames, qtd_filters, bins, nfft)
 
 
-def mel(hertz_rate):
-    # Converts a frequency in Hz to Mel
-    srate = hertz_rate / 2.0
-    return 2595.0 * math.log10(1.0 + srate / 700.0)
-
-
-def mel_points_to_hertz(points):
-    # Converts a signal from Mel to Hz
-    return 700 * (10 ** (points / 2595) - 1)
-
-
-def bark(hertz_rate):
-    t1 = 13.0 * math.atan(0.00076 * hertz_rate)
-    t2 = 3.5 * math.atan((hertz_rate / 7500) ** 2)
-    return t1 + t2
-
-
-def bark_spectrum(spec):
-    spec /= 600.0
-    return 6 * np.log(spec + np.sqrt((spec + 1) ** 2))
-
-
 def _triangular_filter_banks(pow_frames, qtd_filters, bins, nfft):
     fbank = np.zeros((qtd_filters, int(np.floor(nfft / 2 + 1))))
     for m in range(1, qtd_filters + 1):
