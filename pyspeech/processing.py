@@ -35,12 +35,12 @@ def _preemph(signal, alpha):
 
 
 def _split(sample_rate, signal, frame_size, frame_stride):
-    frame_length = int(round(frame_size / 1000. * sample_rate))  # miliseconds
-    frame_step = int(round(frame_stride / 1000. * sample_rate))  # miliseconds
+    frame_length = int(round(frame_size/1000. * sample_rate))  # miliseconds
+    frame_step = int(round(frame_stride/1000. * sample_rate))  # miliseconds
     signal_length = len(signal)
     qtd_frames = math.ceil((signal_length - frame_length) / frame_step)
 
-    pad_signal_length = qtd_frames * frame_step + frame_length
+    pad_signal_length = qtd_frames*frame_step + frame_length
     z = np.zeros(pad_signal_length - signal_length)
     padded_signal = np.append(signal, z)
 
@@ -52,7 +52,7 @@ def _split(sample_rate, signal, frame_size, frame_stride):
 
 
 def _hamming_window(frames, length):
-    frames *= 0.54 - 0.46 * math.cos(2.0 * math.pi / (length))
+    frames *= 0.54 - 0.46*math.cos(2.0*math.pi / (length))
 
 
 def equal_loudness_preemphasis():

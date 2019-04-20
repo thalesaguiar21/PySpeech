@@ -79,7 +79,7 @@ def _deltas(feats):
     ''' Compute the first derivative of a given array '''
     vec_size = feats.size
     forwarded_feats = feats[1:] - feats[:-1]
-    denom = 2 * sum([i ** 2.0 for i in range(vec_size - 1)])
+    denom = 2 * sum([i**2.0 for i in range(vec_size - 1)])
     coefs = np.array([i / denom for i in range(vec_size - 1)])
     return forwarded_feats * coefs
 
@@ -89,7 +89,7 @@ def log_energy(windowed_frames):
     frame_energies = []
     frame_size = windowed_frames.shape[1]
     for frame in windowed_frames:
-        arg = (1.0 / frame_size) * frame ** 2
+        arg = 1.0/frame_size * frame**2
         frame_energies.append(10 * np.log10(epsilon + arg.sum()))
     return np.array(frame_energies)
 
