@@ -9,7 +9,7 @@ changes to code will be frequent.
 - [X] Add bark filter bank
 - [ ] Add testing folder
 - [ ] Compute minimum NFFT to better process signal
-- [ ] Generalise delta computaing for 1D arrays
+- [X] Generalise delta computaing for 1D arrays
 - [X] Change project structure
 - [X] Move signal transformations from `processing.py` module
 - [X] Fix mfcc log error
