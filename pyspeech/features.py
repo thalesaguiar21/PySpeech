@@ -63,16 +63,16 @@ def mfcc_means(frames, qtd_ceps):
 
 def deltas(feats):
     ''' Compute the first derivative of a given feature vector '''
-    if len(feats.shape) == 1:
+    dim = len(feats.shape)
+    if dim == 1:
         return sum(_deltas(feats))
-    elif len(feats.shape) == 2:
+    elif dim == 2:
         deltas = np.zeros((feats.shape[1], ))
         for fi in feats:
             deltas += _deltas(fi)
         return deltas
     else:
-        raise ValueError(
-            'Feature dimension ({}) not supported!'.format(len(feats.shape)))
+        raise ValueError('Dimension ({}) not supported!'.format(dim))
 
 
 def _deltas(feats):
@@ -89,7 +89,7 @@ def log_energy(windowed_frames):
     frame_energies = []
     frame_size = windowed_frames.shape[1]
     for frame in windowed_frames:
-        arg = 1.0/frame_size * frame**2
+        arg = 1.0/frame_size * frame**2.0
         frame_energies.append(10 * np.log10(epsilon + arg.sum()))
     return np.array(frame_energies)
 
