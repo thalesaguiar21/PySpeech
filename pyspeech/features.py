@@ -1,5 +1,52 @@
 import numpy as np
 import pyspeech.transform as sptrans
+from enum import Enum, auto
+
+
+class Feats(Enum):
+    MFCC = auto()
+    PLP = auto()
+    JITTER_ABS = auto()
+    JITTER_RAP = auto()
+    JITTER_PPQN = auto()
+    JITTER_DDP = auto()
+    SHIMER = auto()
+    SHIMMER_DB = auto()
+    SHIMMER_APQN = auto()
+    SHIMMER_DDA = auto()
+    RPDE = auto()
+    DFA = auto()
+    PPE = auto()
+
+
+def extract(feats_types, frames, qtd_ceps):
+    ''' Create a 2D array with appended features in the given order '''
+    features = []
+    if Feats.MFCC in feats_types:
+        features.append(mfcc_means(frames, qtd_ceps))
+    if Feats.PLP in feats_types:
+        features.append(plp())
+    if Feats.JITTER_ABS in feats_types:
+        features.append(jitter_abs())
+    if Feats.JITTER_DDP in feats_types:
+        features.append(jitter_ddp())
+    if Feats.JITTER_PPQN in feats_types:
+        features.append(jitter_ppqn())
+    if Feats.JITTER_DDP in feats_types:
+        features.append(jitter_ddp())
+    if Feats.SHIMMER in feats_types:
+        features.append(shimmer())
+    if Feats.SHIMMER_DB in feats_types:
+        features.append(shimmer_db())
+    if Feats.SHIMMER_DDA in feats_types:
+        features.append(shimmer_dda())
+    if Feats.RPDE in feats_types:
+        features.append(rpde())
+    if Feats.DFA in feats_types:
+        features.append(dfa())
+    if Feats.PPE in feats_types:
+        features.append(ppe())
+    return features
 
 
 def mfcc(frames, qtd_ceps):
