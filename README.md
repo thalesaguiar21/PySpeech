@@ -6,19 +6,15 @@ Several signal processing and feature extraction functions for automatic speech 
 Notice that this project is still on developemnt, therefore bugs may occur and
 changes to code will be frequent.
 
+- [ ] Added plotting module
 - [ ] Fix bark filter bank
 - [ ] Add PLP features
-- [X] Add bark filter bank
 - [ ] Add testing folder
 - [ ] Compute minimum NFFT to better process signal
-- [X] Generalise delta computaing for 1D arrays
-- [X] Change project structure
-- [X] Move signal transformations from `processing.py` module
-- [X] Fix mfcc log error
 - [ ] Add better logging messages
 
 ## Basic usage
-For processing, that is, to apply a preemphasis, split and apply a windowing 
+For processing, that is, to apply a preemphasis, split and apply a windowing
 function to the speech signal you can process a single audio
 
 ```python
