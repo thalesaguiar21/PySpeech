@@ -1,6 +1,6 @@
 import numpy as np
-import pyspeech.processing as spproc
-import pyspeech.filters as spfilt
+import pyspeech.dsp.processing as spproc
+import pyspeech.dsp.filters as spfilt
 import scipy.fftpack as scifft
 
 

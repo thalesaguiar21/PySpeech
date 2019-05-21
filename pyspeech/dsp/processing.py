@@ -1,6 +1,6 @@
-import numpy as np
 import math
-import pyspeech.transform as sptransf
+import numpy as np
+import pyspeech.dsp.transform as sptransf
 
 
 def preprocess(signal, freq, frame_size, frame_stride, gain, nfft=512):

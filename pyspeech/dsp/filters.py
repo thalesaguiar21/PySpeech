@@ -1,14 +1,13 @@
-import numpy as np
 import math
-import pyspeech.scales as spscale
+import numpy as np
 
 
 def mel_banks(pow_frames, qtd_filters, samplerate, nfft):
     low_freq_mel = 0
-    high_freq_mel = spscale.hz_to_mel(samplerate)
+    high_freq_mel = hz_to_mel(samplerate)
     # Center points of triangular filters
     mel_points = np.linspace(low_freq_mel, high_freq_mel, qtd_filters + 2)
-    hz_points = spscale.mel_signal_to_hz(mel_points)
+    hz_points = mel_signal_to_hz(mel_points)
     bins = np.floor((nfft + 1) * hz_points/samplerate)
     return _triangular_filter_banks(pow_frames, qtd_filters, bins, nfft)
 
