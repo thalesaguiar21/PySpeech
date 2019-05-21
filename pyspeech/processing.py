@@ -1,13 +1,13 @@
 import numpy as np
 import math
-import pyspeech.transform as sptrans
+import pyspeech.transform as sptransf
 
 
 def powerspectrum(signal, freq, frame_size, frame_stride, gain):
-    emph_signal = emphasize(signal)
+    emph_signal = emphasize(signal, gain)
     framed_signal = make_frames(emph_signal, freq, frame_size, frame_stride)
-    windowed_frames = _hamming_window(framed_signal, frame_size)
-    return sptrans.fft(windowed_frames, 512)
+    _hamming_window(framed_signal, frame_size)
+    return sptransf.stfft(framed_signal, 512)
 
 
 def make_frames(signal, sample_rate, frame_size, frame_stride):

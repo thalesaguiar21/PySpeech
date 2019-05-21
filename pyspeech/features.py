@@ -1,16 +1,15 @@
 import numpy as np
-import pyspeech.transform as sptrans
 import pyspeech.processing as spproc
 import pyspeech.filters as spfilt
+import scipy.fftpack as scifft
 
 
 def mfcc(signal, frequency, nfilt):
     # Applies a Discrete Correlation Transforma(DCT) on Filter Banks
     power_spec = spproc.powerspectrum(signal, frequency, 25, 10, 0.97)
     filtered_frames = spfilt.mel_banks(power_spec, nfilt, frequency, 512)
-    dctII_frames = [sptrans.dctII_onedim(frame) for frame in filtered_frames]
-    melfrequencies = [np.absolute(dctframe) for dctframe in dctII_frames]
-    npmelfrencies = np.array(melfrequencies)
+    dctframes = scifft.dct(filtered_frames, axis=1, norm='ortho')
+    npmelfrencies = np.array(dctframes)
     mfccs = np.log(npmelfrencies)
     return mfccs
 
