@@ -1,55 +1,7 @@
 import numpy as np
 import pyspeech.transform as sptrans
 import pyspeech.processing as spproc
-import pyspeech.folder as spfold
 import pyspeech.filters as spfilt
-from enum import Enum, auto
-
-
-class Feats(Enum):
-    MFCC = auto()
-    PLP = auto()
-    JITTER_ABS = auto()
-    JITTER_RAP = auto()
-    JITTER_PPQN = auto()
-    JITTER_DDP = auto()
-    SHIMER = auto()
-    SHIMMER_DB = auto()
-    SHIMMER_APQN = auto()
-    SHIMMER_DDA = auto()
-    RPDE = auto()
-    DFA = auto()
-    PPE = auto()
-
-
-def extract(feats_types, frames, qtd_ceps):
-    ''' Create a 2D array with appended features in the given order '''
-    features = []
-    if Feats.MFCC in feats_types:
-        features.append(mfcc(frames, qtd_ceps))
-    if Feats.PLP in feats_types:
-        features.append(plp())
-    if Feats.JITTER_ABS in feats_types:
-        features.append(jitter_abs())
-    if Feats.JITTER_DDP in feats_types:
-        features.append(jitter_ddp())
-    if Feats.JITTER_PPQN in feats_types:
-        features.append(jitter_ppqn())
-    if Feats.JITTER_DDP in feats_types:
-        features.append(jitter_ddp())
-    if Feats.SHIMMER in feats_types:
-        features.append(shimmer())
-    if Feats.SHIMMER_DB in feats_types:
-        features.append(shimmer_db())
-    if Feats.SHIMMER_DDA in feats_types:
-        features.append(shimmer_dda())
-    if Feats.RPDE in feats_types:
-        features.append(rpde())
-    if Feats.DFA in feats_types:
-        features.append(dfa())
-    if Feats.PPE in feats_types:
-        features.append(ppe())
-    return features
 
 
 def mfcc(signal, frequency, nfilt):
@@ -94,64 +46,6 @@ def log_energy(windowed_frames):
         arg = 1.0/frame_size * frame**2.0
         frame_energies.append(10 * np.log10(epsilon + arg.sum()))
     return np.array(frame_energies)
-
-
-def plp():
-    # power spectrum
-    # bark filter banks
-    # equal-loudness preemphasis
-    # intensity-to-loudness
-    # linear prediction
-    # cepstrum computation
-    raise NotImplementedError()
-
-
-def lsf():
-    raise NotImplementedError()
-
-
-def jitter_abs():
-    raise NotImplementedError()
-
-
-def jitter_rap():
-    raise NotImplementedError()
-
-
-def jitter_ppqn(n=5):
-    raise NotImplementedError()
-
-
-def jitter_ddp():
-    raise NotImplementedError()
-
-
-def shimmer():
-    raise NotImplementedError()
-
-
-def shimmer_db():
-    raise NotImplementedError()
-
-
-def shimmer_apqn(n=3):
-    raise NotImplementedError()
-
-
-def shimmer_dda():
-    raise NotImplementedError()
-
-
-def rpde():
-    raise NotImplementedError()
-
-
-def dfa():
-    raise NotImplementedError()
-
-
-def ppe():
-    raise NotImplementedError()
 
 
 def mean_normalization(feature):
