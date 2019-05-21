@@ -4,14 +4,6 @@ import numpy as np
 def wer(expected, result, subc=1):
     """ Compute the levenshtein distance between the given strings
 
-    ld_a_b(i, j) = if min(i, j) == 0, max(i, j)
-                   otherwise, min(
-                       ld_a_b(i - 1, j) + 1,
-                       ld_a_b(i, j - 1) + 1,
-                       ld_a_b(i - 1, j - 1) + sub_cost,
-                   )
-    where i = |a| and j = |b|.
-
     Parameters
     ----------
     expected : list or string
