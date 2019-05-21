@@ -4,7 +4,14 @@ import pyspeech.dsp.filters as spfilt
 import scipy.fftpack as scifft
 
 
-def mfcc(signal, frequency, nfilt):
+def mfcc(signals, frequencies, nfilt):
+    mfccs = []
+    for signal, frequency in zip(signals, frequencies):
+        mfccs.append(_mfcc(signal, frequency, nfilt))
+    return mfcc
+
+
+def _mfcc(signal, frequency, nfilt):
     # Applies a Discrete Correlation Transforma(DCT) on Filter Banks
     power_spec = spproc.preprocess(signal, frequency, 25, 10, 0.97)
     filtered_frames = spfilt.mel_banks(power_spec, nfilt, frequency, 512)
