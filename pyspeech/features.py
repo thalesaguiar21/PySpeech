@@ -1,5 +1,8 @@
 import numpy as np
 import pyspeech.transform as sptrans
+import pyspeech.processing as spproc
+import pyspeech.folder as spfold
+import pyspeech.filters as spfilt
 from enum import Enum, auto
 
 
@@ -23,7 +26,7 @@ def extract(feats_types, frames, qtd_ceps):
     ''' Create a 2D array with appended features in the given order '''
     features = []
     if Feats.MFCC in feats_types:
-        features.append(mfcc_means(frames, qtd_ceps))
+        features.append(mfcc(frames, qtd_ceps))
     if Feats.PLP in feats_types:
         features.append(plp())
     if Feats.JITTER_ABS in feats_types:
@@ -49,16 +52,15 @@ def extract(feats_types, frames, qtd_ceps):
     return features
 
 
-def mfcc(frames, qtd_ceps):
+def mfcc(signal, frequency, nfilt):
     # Applies a Discrete Correlation Transforma(DCT) on Filter Banks
-    MFs = np.array([np.absolute(sptrans.dctII_onedim(f)) for f in frames])
-    mfccs = np.log(MFs)
-    return mfccs[:, 1:qtd_ceps + 1]
-
-
-def mfcc_means(frames, qtd_ceps):
-    # Applies a Discrete Correlation Transforma(DCT) on Filter Banks
-    return np.mean(mfcc(frames, qtd_ceps), axis=0)
+    power_spec = spproc.powerspectrum(signal, frequency, 25, 10, 0.97)
+    filtered_frames = spfilt.mel_banks(power_spec, nfilt, frequency, 512)
+    dctII_frames = [sptrans.dctII_onedim(frame) for frame in filtered_frames]
+    melfrequencies = [np.absolute(dctframe) for dctframe in dctII_frames]
+    npmelfrencies = np.array(melfrequencies)
+    mfccs = np.log(npmelfrencies)
+    return mfccs
 
 
 def deltas(feats):
