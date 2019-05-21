@@ -6,7 +6,6 @@ Several signal processing and feature extraction functions for automatic speech 
 Notice that this project is still on developemnt, therefore bugs may occur and
 changes to code will be frequent.
 
-- [ ] Added plotting module
 - [ ] Fix bark filter bank
 - [ ] Add PLP features
 - [ ] Add testing folder

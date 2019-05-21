@@ -6,11 +6,10 @@ import scipy.fftpack as scifft
 
 def mfcc(signal, frequency, nfilt):
     # Applies a Discrete Correlation Transforma(DCT) on Filter Banks
-    power_spec = spproc.powerspectrum(signal, frequency, 25, 10, 0.97)
+    power_spec = spproc.preprocess(signal, frequency, 25, 10, 0.97)
     filtered_frames = spfilt.mel_banks(power_spec, nfilt, frequency, 512)
     dctframes = scifft.dct(filtered_frames, axis=1, norm='ortho')
-    npmelfrencies = np.array(dctframes)
-    mfccs = np.log(npmelfrencies)
+    mfccs = np.array(dctframes)
     return mfccs
 
 

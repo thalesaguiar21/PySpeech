@@ -3,11 +3,11 @@ import math
 import pyspeech.transform as sptransf
 
 
-def powerspectrum(signal, freq, frame_size, frame_stride, gain):
+def preprocess(signal, freq, frame_size, frame_stride, gain, nfft=512):
     emph_signal = emphasize(signal, gain)
     framed_signal = make_frames(emph_signal, freq, frame_size, frame_stride)
     _hamming_window(framed_signal, frame_size)
-    return sptransf.stfft(framed_signal, 512)
+    return sptransf.stfft(framed_signal, nfft)
 
 
 def make_frames(signal, sample_rate, frame_size, frame_stride):
