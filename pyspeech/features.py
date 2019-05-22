@@ -5,10 +5,21 @@ import scipy.fftpack as scifft
 
 
 def mfcc(signals, frequencies, nfilt):
+    fix_dimensions(signals, frequencies)
     mfccs = []
     for signal, frequency in zip(signals, frequencies):
         mfccs.append(_mfcc(signal, frequency, nfilt))
-    return mfcc
+    return mfccs
+
+
+def fix_dimensions(signals, frequencies):
+    augmented_signal = []
+    augmented_freqs = []
+    if not isinstance(signals[0], list):
+        augmented_signal.append(signals)
+    if not isinstance(frequencies, list):
+        augmented_freqs.append(frequencies)
+    return augmented_freqs, augmented_signal
 
 
 def _mfcc(signal, frequency, nfilt):
