@@ -9,18 +9,16 @@ def mfcc(signals, frequencies, nfilt, processor):
     mfccs = []
     for signal, frequency in zip(signals, frequencies):
         mfccs.append(_mfcc(signal, frequency, nfilt, processor))
-    return mfccs
+    return fix_mfcc_single_sample_output(mfccs)
 
 
 def fix_dimensions(signals, frequencies):
-    augmented_signal = []
-    augmented_freqs = []
+    augmented_signal = signals
+    augmented_freqs = frequencies
     if not isinstance(signals[0], (list, np.ndarray)):
-        augmented_signal.append(signals)
+        augmented_signal = [signals]
     if not isinstance(frequencies, list):
-        augmented_freqs.append(frequencies)
-    else:
-        augmented_freqs = frequencies
+        augmented_freqs = [frequencies]
     return augmented_signal, augmented_freqs
 
 
@@ -32,6 +30,13 @@ def _mfcc(signal, frequency, nfilt, processor):
     dctframes = scifft.dct(filtered_frames, axis=1, norm='ortho')
     mfccs = np.array(dctframes)
     return mfccs
+
+
+def fix_mfcc_single_sample_output(mfccs):
+    if len(mfccs) == 1:
+        return mfccs[0]
+    else:
+        return mfccs
 
 
 def deltas(feats):

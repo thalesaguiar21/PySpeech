@@ -14,7 +14,7 @@ audiopath = 'samples/OSR_us_000_0011_8k.wav'
 freq, signal = wavfile.read(audiopath)
 signal = signal[:int(freq * 3.5)]
 mfccs = spfeat.mfcc(signal, freq, nfilters, processor)
-mfccs13 = mfccs[0][:, 1:14]  # Keep 13 mfccs
+mfccs13 = mfccs[:, 1:14]  # Keep 13 mfccs
 
 
 # Extracting 13 MFCCs from several audios
@@ -27,3 +27,5 @@ for audio_path in audios_path:
     signals.append(signal)
 
 feats = spfeat.mfcc(signals, frequencies, nfilters, processor)
+feats[0] # MFCCs for first sample
+feats[1] # MFCCs for second sample
