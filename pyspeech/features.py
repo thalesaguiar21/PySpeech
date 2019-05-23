@@ -4,11 +4,11 @@ import pyspeech.dsp.filters as spfilt
 import scipy.fftpack as scifft
 
 
-def mfcc(signals, frequencies, processor):
+def mfcc(signals, frequencies, nfilt, processor):
     signals, frequencies = fix_dimensions(signals, frequencies)
     mfccs = []
     for signal, frequency in zip(signals, frequencies):
-        mfccs.append(_mfcc(signal, frequency, nfilt))
+        mfccs.append(_mfcc(signal, frequency, nfilt, processor))
     return mfccs
 
 
@@ -24,10 +24,11 @@ def fix_dimensions(signals, frequencies):
     return augmented_signal, augmented_freqs
 
 
-def _mfcc(signal, frequency, nfilt):
-    # Applies a Discrete Correlation Transforma(DCT) on Filter Banks
+def _mfcc(signal, frequency, nfilt, processor):
+    # Applies a Discrete Cosine Transforma (DCT) on Filter Banks
     power_spec = processor.preprocess(signal, frequency)
-    filtered_frames = spfilt.mel_banks(power_spec, nfilt, frequency, processor.NFFT)
+    filtered_frames = spfilt.mel_banks(
+        power_spec, nfilt, frequency, processor.NFFT)
     dctframes = scifft.dct(filtered_frames, axis=1, norm='ortho')
     mfccs = np.array(dctframes)
     return mfccs
