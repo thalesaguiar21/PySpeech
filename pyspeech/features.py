@@ -12,7 +12,7 @@ def mfcc(signals, frequencies, nfilt, processor):
     return fix_mfcc_single_sample_output(mfccs)
 
 
-def fix_dimensions(signals, frequencies):
+def _fix_dimensions(signals, frequencies):
     augmented_signal = signals
     augmented_freqs = frequencies
     if not isinstance(signals[0], (list, np.ndarray)):
@@ -32,14 +32,14 @@ def _mfcc(signal, frequency, nfilt, processor):
     return mfccs
 
 
-def fix_mfcc_single_sample_output(mfccs):
+def _fix_mfcc_single_sample_output(mfccs):
     if len(mfccs) == 1:
         return mfccs[0]
     else:
         return mfccs
 
 
-def deltas(feats):
+def deltas(feats, axis=-1):
     ''' Compute the first derivative of a given feature vector '''
     dim = len(feats.shape)
     if dim == 1:
