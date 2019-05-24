@@ -4,7 +4,7 @@ import pyspeech.dsp.filters as spfilt
 import scipy.fftpack as scifft
 
 
-def mfcc(signals, frequencies, nfilt, processor):
+def extract_mfcc(signals, frequencies, nfilt, processor):
     signals, frequencies = fix_dimensions(signals, frequencies)
     mfccs = []
     for signal, frequency in zip(signals, frequencies):
@@ -39,7 +39,7 @@ def _fix_mfcc_single_sample_output(mfccs):
         return mfccs
 
 
-def deltas(feats, axis=-1):
+def make_deltas(feats):
     ''' Compute the first derivative of a given feature vector '''
     dim = len(feats.shape)
     if dim == 1:
@@ -62,7 +62,7 @@ def _deltas(feats):
     return forwarded_feats * coefs
 
 
-def log_energy(windowed_frames):
+def make_log_energy(windowed_frames):
     epsilon = 10e-5
     frame_energies = []
     frame_size = windowed_frames.shape[1]
@@ -72,5 +72,5 @@ def log_energy(windowed_frames):
     return np.array(frame_energies)
 
 
-def mean_normalization(feature):
+def mean_normalise(feature):
     feature -= np.mean(feature, axis=0) + 1e-8
