@@ -1,4 +1,5 @@
 import numpy as np
+import pdb
 import pyspeech.dsp.processing as spproc
 import pyspeech.dsp.filters as spfilt
 import scipy.fftpack as scifft
@@ -43,11 +44,9 @@ def make_deltas(feats):
     ''' Compute the first derivative of a given feature vector '''
     dim = len(feats.shape)
     if dim == 1:
-        return sum(_deltas(feats))
+        return _deltas(feats)
     elif dim == 2:
-        deltas = np.zeros((feats.shape[1], ))
-        for fi in feats:
-            deltas += _deltas(fi)
+        deltas = np.array([_deltas(fi) for fi in feats])
         return deltas
     else:
         raise ValueError('Dimension ({}) not supported!'.format(dim))
@@ -55,11 +54,13 @@ def make_deltas(feats):
 
 def _deltas(feats):
     ''' Compute the first derivative of a given array '''
-    vec_size = feats.size
-    forwarded_feats = feats[1:] - feats[:-1]
-    denom = 2 * sum([i**2.0 for i in range(vec_size - 1)])
-    coefs = np.array([i / denom for i in range(vec_size - 1)])
-    return forwarded_feats * coefs
+    num = 0
+    denom = 0
+    for n in range(1, feats.size - 1):
+        num += n * (feats[n]-feats[n-1]) 
+        denom += 2 * n**2  
+    delta = 0.5 * num/denom
+    return delta
 
 
 def make_log_energy(windowed_frames):
