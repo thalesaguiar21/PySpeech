@@ -5,11 +5,11 @@ import scipy.fftpack as scifft
 
 
 def extract_mfcc(signals, frequencies, nfilt, processor):
-    signals, frequencies = fix_dimensions(signals, frequencies)
+    signals, frequencies = _fix_dimensions(signals, frequencies)
     mfccs = []
     for signal, frequency in zip(signals, frequencies):
         mfccs.append(_mfcc(signal, frequency, nfilt, processor))
-    return fix_mfcc_single_sample_output(mfccs)
+    return _fix_mfcc_single_sample_output(mfccs)
 
 
 def _fix_dimensions(signals, frequencies):
@@ -74,3 +74,4 @@ def make_log_energy(windowed_frames):
 
 def mean_normalise(feature):
     feature -= np.mean(feature, axis=0) + 1e-8
+
