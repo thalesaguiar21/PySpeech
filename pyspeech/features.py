@@ -40,27 +40,34 @@ def _fix_mfcc_single_sample_output(mfccs):
         return mfccs
 
 
-def make_deltas(feats):
-    ''' Compute the first derivative of a given feature vector '''
-    dim = len(feats.shape)
-    if dim == 1:
-        return _deltas(feats)
-    elif dim == 2:
-        deltas = np.array([_deltas(fi) for fi in feats])
+class Delta:
+
+    def __init__(self, smooth):
+       self.smooth = smooth 
+       self.denom = sum([2 * n**2 for n in range(1, smooth + 1)])
+
+    def make_means(self, frames):
+        deltas = np.array(self.make(frames))
+        return np.mean(deltas, axis=0)
+
+    def make(self, frames):
+        frames_t = np.array(frames).T
+        pdb.set_trace()
+        fr_deltas = [self._deltas(fr_i) for fr_i in frames_t]
+        return fr_deltas
+
+    def _deltas(self, frame):
+        max_length = frame.shape[0] - self.smooth
+        deltas = [self._delta(frame, t) for t in range(max_length)]
         return deltas
-    else:
-        raise ValueError('Dimension ({}) not supported!'.format(dim))
 
-
-def _deltas(feats):
-    ''' Compute the first derivative of a given array '''
-    num = 0
-    denom = 0
-    for n in range(1, feats.size - 1):
-        num += n * (feats[n]-feats[n-1]) 
-        denom += 2 * n**2  
-    delta = 0.5 * num/denom
-    return delta
+    def _delta(self, frame, t):
+        num = 0
+        denom = 0
+        for n in range(1, self.smooth + 1):
+            num += n * (frame[t+n] - frame[t-n])
+        delta = num / self.denom
+        return delta
 
 
 def make_log_energy(windowed_frames):
