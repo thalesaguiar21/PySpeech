@@ -1,5 +1,4 @@
 import numpy as np
-import pdb
 import pyspeech.dsp.processing as spproc
 import pyspeech.dsp.filters as spfilt
 import scipy.fftpack as scifft
@@ -51,10 +50,9 @@ class Delta:
         return np.mean(deltas, axis=0)
 
     def make(self, frames):
-        frames_t = np.array(frames).T
-        pdb.set_trace()
+        frames_t = _fix_frame_dim(frames).T
         fr_deltas = [self._deltas(fr_i) for fr_i in frames_t]
-        return fr_deltas
+        return np.array(fr_deltas)
 
     def _deltas(self, frame):
         max_length = frame.shape[0] - self.smooth
@@ -68,6 +66,13 @@ class Delta:
             num += n * (frame[t+n] - frame[t-n])
         delta = num / self.denom
         return delta
+
+
+def _fix_frame_dim(frame):
+    fixed_frames = np.array(frame)
+    if not isinstance(frame[0], (list, np.ndarray)):
+        fixed_frames = np.array([frame])
+    return fixed_frames
 
 
 def make_log_energy(windowed_frames):
