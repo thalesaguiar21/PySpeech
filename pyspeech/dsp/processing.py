@@ -14,13 +14,12 @@ class Processor:
     def preprocess(self, signal, freq):
         emph_signal = emphasize(signal, self.emph)
         framed_signal = self.make_frames(emph_signal, freq)
-        frame_length = int(round(self.frame.size/1000. * freq))
-        framed_signal *= np.hamming(frame_length)
+        framed_signal *= np.hamming(self.frame.length(freq))
         return sptransf.stfft(framed_signal, self.NFFT)
 
     def make_frames(self, signal, sample_rate):
-        frame_length = int(round(self.frame.size/1000. * sample_rate))
-        frame_step = int(round(self.frame.stride/1000. * sample_rate))
+        frame_length = self.frame.length(sample_rate) 
+        frame_step = self.frame.step(sample_rate) 
         signal_length = len(signal)
         qtd_frames = math.ceil((signal_length - frame_length) / frame_step)
 
@@ -36,10 +35,17 @@ class Processor:
         return padded_signal[indices.astype(np.int32, copy=False)]
 
 
-@dataclass
 class Frame:
-    size: int
-    stride: int
+
+    def __init__(self, size, stride):
+        self.size = size
+        self.stride = stride
+
+    def length(self, freq):
+        return int(round(self.size/1000. * freq))
+
+    def step(self, freq):
+        return int(round(self.size/1000. * freq))
 
 
 def _hamming_window(frames, length):
