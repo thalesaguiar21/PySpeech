@@ -15,7 +15,7 @@ class Processor:
         emph_signal = emphasize(signal, self.emph)
         framed_signal = self.make_frames(emph_signal, freq)
         framed_signal *= np.hamming(self.frame.length(freq))
-        return sptransf.stfft(framed_signal, self.NFFT)
+        return sptransf.make_power_spectrum(framed_signal, self.NFFT)
 
     def make_frames(self, signal, sample_rate):
         frame_length = self.frame.length(sample_rate) 
