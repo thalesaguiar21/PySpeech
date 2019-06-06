@@ -48,10 +48,6 @@ class Frame:
         return int(round(self.size/1000. * freq))
 
 
-def _hamming_window(frames, length):
-    frames *= 0.54 - 0.46*math.cos(2.0*math.pi/(length))
-
-
 def emphasize(signal, gain):
     return np.append(signal[0], signal[1:] - gain*signal[:-1])
 
