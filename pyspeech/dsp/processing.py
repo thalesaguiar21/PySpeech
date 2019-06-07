@@ -48,7 +48,20 @@ class Frame:
         return int(round(self.size/1000. * freq))
 
 
+def remove_silence(signal, frame, freq, threshold=0.3):
+    frame_len = frame.length(freq)
+    n_frames = int(math.floor(signal.size / frame_len))
+    pad_length = frame_len - (signal.size - n_frames*frame_len)
+    padded_signal = np.append(normalise(signal), np.zeros((pad_length)))
+    frames = np.reshape(padded_signal, (n_frames + 1, frame_len))
+    indices = [i for i in range(n_frames + 1) if frames[i].max() > threshold]
+    non_silence_frames = frames[indices]
+    return np.reshape(non_silence_frames, non_silence_frames.size)
+
+
 def emphasize(signal, gain):
     return np.append(signal[0], signal[1:] - gain*signal[:-1])
 
 
+def normalise(signal):
+    return signal * 1.0/signal.max()
