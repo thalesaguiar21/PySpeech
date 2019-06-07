@@ -102,3 +102,12 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+
+# laps stuff
+samples/Laps*.wav
+ext_laps.py
+laps_feats.txt
+
+
+# plots
+plots/*
