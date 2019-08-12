@@ -108,6 +108,9 @@ samples/Laps*.wav
 ext_laps.py
 laps_feats.txt
 
+# mocha stuff
+samples/fs*.wav
+samples/ms*.wav
 
 # plots
 plots/*
