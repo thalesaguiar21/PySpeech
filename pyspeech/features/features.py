@@ -42,12 +42,12 @@ def _fix_mfcc_single_sample_output(mfccs):
 class Delta:
 
     def __init__(self, smooth):
-       self.smooth = smooth 
+       self.smooth = smooth
        self.denom = sum([2 * n**2 for n in range(1, smooth + 1)])
 
     def make_means(self, frames):
         deltas = np.array(self.make(frames))
-        return np.mean(deltas, axis=0)
+        return np.mean(deltas, axis=1)
 
     def make(self, frames):
         frames_t = _fix_frame_dim(frames).T
