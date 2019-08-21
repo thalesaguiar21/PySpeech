@@ -14,5 +14,5 @@ def normalise(dataset):
 
 
 def normalise_by_column(dataset):
-   normalise(dataset.T) 
+   normalise(dataset.T)
 
