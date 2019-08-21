@@ -14,5 +14,9 @@ def normalise(dataset):
 
 
 def normalise_by_column(dataset):
-   normalise(dataset.T)
+    normalise(dataset.T)
+
+
+def mean_normalise(feature):
+    feature -= np.mean(feature, axis=0) + 1e-8
 
