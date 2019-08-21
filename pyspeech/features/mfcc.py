@@ -27,6 +27,6 @@ def _mfcc(signal, frequency, nfilt, processor, cepstrums):
     power_spec = processor.preprocess(signal, frequency)
     filtered_frames = spfilt.mel_banks(power_spec, nfilt, frequency, processor.NFFT)
     dctframes = scifft.dct(filtered_frames, type=2, axis=1, norm='ortho')
-    mfccs = np.array(dctframes)[:, 1:14]
+    mfccs = np.array(dctframes)[:, 1:cepstrums + 1]
     return mfccs
 
