@@ -114,3 +114,4 @@ samples/ms*.wav
 
 # plots
 plots/*
+dataset/*
