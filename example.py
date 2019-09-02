@@ -1,5 +1,6 @@
 from scipy.io import wavfile
 import pyspeech.features.mfcc as mfcc
+import pyspeech.features.plp as plp
 import pyspeech.folder as spfold
 import pyspeech.dsp.processing as spproc
 
@@ -13,7 +14,6 @@ processor = spproc.Processor(frame, emph=0.97, nfft=512)
 audiopath = 'samples/OSR_us_000_0011_8k.wav'
 freq, signal = wavfile.read(audiopath)
 mfccs = mfcc.extract(signal, freq, nfilters, processor, cepstrums=13)
-print(mfccs[0].shape)
 
 # Extracting 13 MFCCs from several audios
 audios_path = spfold.find_wav_files('samples')
@@ -26,5 +26,7 @@ for audio_path in audios_path:
 
 feats = mfcc.extract(signals, frequencies, nfilters, processor, cepstrums=13)
 feats[0] # MFCCs for first audio
-print(feats[0].shape)
+
+# Extracting PLP
+plp.extract(signal, freq, nfilters, processor, cepstrums=13)
 
