@@ -3,9 +3,9 @@ import os
 
 def _find_files(folder_path, extension):
     dt_files = []
-    for file_ in os.listdir(folder_path):
-        if file_.lower().endswith("." + extension):
-            dt_files.append(os.path.join(folder_path, file_))
+    for dirpath, dirname, fnames in os.walk(folder_path):
+        for fname in [f for f in fnames if f.lower().endswith('.' + extension)]:
+            dt_files.append(os.path.join(dirpath, fname)
     print(f"Found {len(dt_files)} wav files!")
     return dt_files
 
