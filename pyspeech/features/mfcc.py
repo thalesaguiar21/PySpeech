@@ -10,10 +10,8 @@ def make_means_and_deltas(signals, frequencies, nfilt, processor, cepstrums):
     mfccs = extract(signals, frequencies, nfilt, processor, cepstrums)
     mfcc_means = np.array([np.mean(mfcc, axis=0) for mfcc in mfccs])
     delta = spdyn.Delta(smooth=2)
-    delta1 = [delta.make(mfcc) for mfcc in mfccs]
-    delta1means = np.array([delta.make_means(mfcc) for mfcc in mfccs])
-    delta2means = np.array([delta.make_means(dt1.T) for dt1 in delta1])
-    allfeats = np.hstack((mfcc_means, delta1means, delta2means))
+    d1, d2 = delta.make_delta_and_ddelta_means(mfccs)
+    allfeats = np.hstack((mfcc_means, d1, d2))
     return allfeats
 
 

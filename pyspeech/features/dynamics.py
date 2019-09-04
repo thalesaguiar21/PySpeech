@@ -10,6 +10,12 @@ class Delta:
        self.smooth = smooth
        self.denom = sum([2 * n**2 for n in range(1, smooth + 1)])
 
+    def make_delta_and_ddelta_means(self, frames):
+        delta1 = [self.make(frame) for frame in frames]
+        d1means = np.array([self.make_means(frame) for frame in frames])
+        d2means = np.array([self.make_means(dt1.T) for dt1 in delta1])
+        return d1means, d2means
+
     def make_means(self, frames):
         deltas = np.array(self.make(frames))
         return np.mean(deltas, axis=1)
