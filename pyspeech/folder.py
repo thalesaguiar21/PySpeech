@@ -7,7 +7,7 @@ def _find_files(folder_path, extension):
         for fname in fnames:
             if fname.lower().endswith('.' + extension):
                 dt_files.append(os.path.join(dirpath, fname))
-    print(f"Found {len(dt_files)} wav files!")
+    print(f"Found {len(dt_files)} {extension} files!")
     return dt_files
 
 
