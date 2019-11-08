@@ -64,4 +64,5 @@ def emphasize(signal, gain):
 
 
 def normalise(signal):
-    return signal * 1.0/signal.max()
+    max_amp = np.absolute(signal).max()
+    return signal / max_amp
