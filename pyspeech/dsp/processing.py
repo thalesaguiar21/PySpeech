@@ -18,8 +18,8 @@ class Processor:
         return sptransf.make_power_spectrum(framed_signal, self.NFFT)
 
     def make_frames(self, signal, sample_rate):
-        frame_length = self.frame.length(sample_rate) 
-        frame_step = self.frame.step(sample_rate) 
+        frame_length = self.frame.length(sample_rate)
+        frame_step = self.frame.step(sample_rate)
         signal_length = len(signal)
         qtd_frames = math.ceil((signal_length - frame_length) / frame_step)
 
@@ -54,10 +54,16 @@ def remove_silence(signal, frame, freq, threshold=0.3):
     pad_length = frame_len - (signal.size - n_frames*frame_len)
     padded_signal = np.append(normalise(signal), np.zeros((pad_length)))
     frames = np.reshape(padded_signal, (n_frames + 1, frame_len))
-    indices = [i for i in range(n_frames + 1) if frames[i].max() > threshold]
-    non_silence_frames = frames[indices]
+    non_silence_frames = _get_non_silence_frames(n_frames, frames, threshold)
     return np.reshape(non_silence_frames, non_silence_frames.size)
 
+
+def _get_non_silence_frames(nframes, frames, threshold):
+    non_sil_indexes = []
+    for i in range(nframes + 1):
+        if np.absolute(frames[i]).max() > threshold:
+            non_sil_indexes.append(i)
+    return frames[non_sil_indexes]
 
 def emphasize(signal, gain):
     return np.append(signal[0], signal[1:] - gain*signal[:-1])
