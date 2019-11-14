@@ -4,48 +4,21 @@ import scipy.fftpack as scifft
 import pyspeech.dsp.processing as spproc
 import pyspeech.dsp.filters as spfilt
 
+def delta(frames, smooth=2):
+    """ Extract deltas from the frames
 
-class Delta:
-
-    def __init__(self, smooth):
-       self.smooth = smooth
-       self.denom = sum([2 * n**2 for n in range(1, smooth + 1)])
-
-    def make_delta_and_ddelta_means(self, frames):
-        delta1 = [self.make(frame) for frame in frames]
-        d1means = np.array([self.make_means(frame) for frame in frames])
-        d2means = np.array([self.make_means(dt1.T) for dt1 in delta1])
-        return d1means, d2means
-
-    def make_means(self, frames):
-        deltas = np.array(self.make(frames))
-        return np.mean(deltas, axis=1)
-
-    def make(self, frames):
-        frames_t = _fix_frame_dim(frames).T
-        fr_deltas = [self._deltas(fr_i) for fr_i in frames_t]
-        return np.array(fr_deltas)
-
-    def _deltas(self, frame):
-        max_length = frame.shape[0] - self.smooth
-        deltas = [self._delta(frame, t) for t in range(max_length)]
-        return deltas
-
-    def _delta(self, frame, t):
-        num = 0
-        denom = 0
-        for n in range(1, self.smooth + 1):
-            num += n * (frame[t+n] - frame[t-n])
-        delta = num / self.denom
-        return delta
-
-
-def _fix_frame_dim(frame):
-    fixed_frames = np.array(frame)
-    if not isinstance(frame[0], (list, np.ndarray)):
-        fixed_frames = np.array([frame])
-    return fixed_frames
-
+    Args:
+        frames (ndarray): The feature matrix
+        smooth (int): The number frames to jump
+    """
+    frames_t = frames.T
+    denom = 2/6 * (smooth+1) * (2*smooth + 1)
+    deltas = np.zeros((frames_t.shape[0], frames_t.shape[1] - smooth))
+    for frm, delta in zip(frames_t, deltas):
+        for t in range(frames_t.shape[0] - smooth):
+            for n in range(1, smooth + 1):
+               delta[t] += n*(frm[t+n] - frm[t-n]) / denom
+    return deltas
 
 def make_log_energy(windowed_frames):
     epsilon = 10e-5
