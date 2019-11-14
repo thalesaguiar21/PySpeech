@@ -45,7 +45,7 @@ class Frame:
         return int(round(self.size/1000. * freq))
 
     def step(self, freq):
-        return int(round(self.size/1000. * freq))
+        return int(round(self.stride/1000. * freq))
 
 
 class Signal:
