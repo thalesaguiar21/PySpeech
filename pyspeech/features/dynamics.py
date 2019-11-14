@@ -20,12 +20,11 @@ def delta(frames, smooth=2):
                delta[t] += n*(frm[t+n] - frm[t-n]) / denom
     return deltas
 
-def make_log_energy(windowed_frames):
-    epsilon = 10e-5
-    frame_energies = []
-    frame_size = windowed_frames.shape[1]
-    for frame in windowed_frames:
-        arg = 1.0/frame_size * frame**2.0
-        frame_energies.append(10 * np.log10(epsilon + arg.sum()))
-    return np.array(frame_energies)
+
+def log_energy(signal, emph, frame, lfreq, hfreq):
+    wnd_signal = sproc.split(signal, frame)
+    pow_spec = sproc.power_spectrum(wnd_signal, nfft)
+    energies = np.sum(pow_spec, axis=1)
+    bounded_energies = np.fmax(energy, np.finfo(np.float64).eps)
+    return bounded_energies
 
