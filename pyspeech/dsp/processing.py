@@ -52,7 +52,23 @@ class Signal:
 
     def __init__(self, amps, freq):
         self.amps = amps
+        self.size = len(amps)
         self.freq = freq
+
+
+def split(signals, frame):
+    for signal in signals:
+       yield _split(signal, frame)
+
+
+def _split(signal, frame):
+    flen = frame.len(signal.freq)
+    nframes = int(math.floor(signal.size / flen))
+    padding = flen - (signal.size - nframes*flen)
+
+    padded_amps = np.append(signal.amps, np.zeros((padding)))
+    frames = np.reshape(padded_amps, (nframes + 1, flen))
+    return frames
 
 
 def remove_silence(signal, frame, freq, threshold=0.3):
