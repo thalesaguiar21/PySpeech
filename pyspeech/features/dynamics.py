@@ -1,7 +1,8 @@
 import numpy as np
+import scipy.fftpack as scifft
+
 import pyspeech.dsp.processing as spproc
 import pyspeech.dsp.filters as spfilt
-import scipy.fftpack as scifft
 
 
 class Delta:
