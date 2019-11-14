@@ -72,17 +72,10 @@ def _split(signal, frame):
 
 
 def remove_silence(signal, frame, freq, threshold=0.3):
-    frame_len = frame.length(freq)
-    n_frames = int(math.floor(signal.size / frame_len))
-    pad_length = frame_len - (signal.size - n_frames*frame_len)
-
-    norm_signal_pad = np.append(normalise(signal), np.zeros((pad_length)))
-    normframes = np.reshape(norm_signal_pad, (n_frames + 1, frame_len))
+    or_frames = _split(signal, frame)
+    norm_frames = _split(normalise(signal.amps), frame)
     voiced_indexes = _get_non_silence_indexes(n_frames, normframes, threshold)
-
-    original_padded = np.append(signal, np.zeros((pad_length)))
-    framed_signal = np.reshape(original_padded, (n_frames + 1, frame_len))
-    voiced_frames = framed_signal[voiced_indexes]
+    voiced_frames = or_frames[voiced_indexes]
     return np.reshape(voiced_frames, voiced_frames.size)
 
 
