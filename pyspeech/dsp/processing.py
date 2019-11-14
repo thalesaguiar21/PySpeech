@@ -1,3 +1,7 @@
+""" This module contains several signal processing functions, such as
+emphasis, framing, and power spectrums. Besides a few data classes to
+encapsulate arguments.
+"""
 import math
 import numpy as np
 
@@ -47,7 +51,13 @@ class Frame:
 
 
 class Signal:
+    """ A simple class to represent a digital signal
 
+    Atributes:
+        amps (ndarray): The amplitudes
+        size (ndarray): The signal length
+        freq (ndarray): The sampling rate
+    """
     def __init__(self, amps, freq):
         self.amps = amps
         self.size = len(amps)
@@ -77,6 +87,24 @@ def mag_spectrum(signal, frame, nfft):
 
 
 def split(signals, frame):
+    """ Splits signals into frames
+
+    Args:
+        signals (list:Signal): The signals to be split
+        frame (Frame): The frame size and stride
+
+    Yields:
+        frames (ndarray): The frammed signal
+
+    Example:
+        >>> sig = Signal(np.arange(24000), 80)
+        >>> frame = Frame(25, 10)
+        >>> list(split(signal, frame))
+        [[1, 2],
+         [2, 3],
+         ...
+         [22998, 22999]]
+    """
     for signal in signals:
        yield _split(signal, frame)
 
@@ -91,6 +119,15 @@ def _split(signal, frame):
 
 
 def remove_silence(signals, frame, threshold=0.3):
+    """ Removes silence from signal based on maximum aplitude
+
+    Args:
+        signal (list:Signal): The signals to remove silence
+        frame (Frame): The frame size and stride
+
+    Yield:
+        The signal with amplitudes > threshold
+    """
     for signal in signals:
         yield _remove_silence(signal, frame, threshold)
 
