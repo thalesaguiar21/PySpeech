@@ -48,6 +48,13 @@ class Frame:
         return int(round(self.size/1000. * freq))
 
 
+class Signal:
+
+    def __init__(self, amps, freq):
+        self.amps = amps
+        self.freq = freq
+
+
 def remove_silence(signal, frame, freq, threshold=0.3):
     frame_len = frame.length(freq)
     n_frames = int(math.floor(signal.size / frame_len))
