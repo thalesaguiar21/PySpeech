@@ -52,18 +52,23 @@ def remove_silence(signal, frame, freq, threshold=0.3):
     frame_len = frame.length(freq)
     n_frames = int(math.floor(signal.size / frame_len))
     pad_length = frame_len - (signal.size - n_frames*frame_len)
-    padded_signal = np.append(normalise(signal), np.zeros((pad_length)))
-    frames = np.reshape(padded_signal, (n_frames + 1, frame_len))
-    non_silence_frames = _get_non_silence_frames(n_frames, frames, threshold)
-    return np.reshape(non_silence_frames, non_silence_frames.size)
+
+    norm_signal_pad = np.append(normalise(signal), np.zeros((pad_length)))
+    normframes = np.reshape(norm_signal_pad, (n_frames + 1, frame_len))
+    voiced_indexes = _get_non_silence_indexes(n_frames, normframes, threshold)
+
+    original_padded = np.append(signal, np.zeros((pad_length)))
+    framed_signal = np.reshape(original_padded, (n_frames + 1, frame_len))
+    voiced_frames = framed_signal[voiced_indexes]
+    return np.reshape(voiced_frames, voiced_frames.size)
 
 
-def _get_non_silence_frames(nframes, frames, threshold):
+def _get_non_silence_indexes(nframes, frames, threshold):
     non_sil_indexes = []
     for i in range(nframes + 1):
         if np.absolute(frames[i]).max() > threshold:
             non_sil_indexes.append(i)
-    return frames[non_sil_indexes]
+    return non_sil_indexes
 
 def emphasize(signal, gain):
     return np.append(signal[0], signal[1:] - gain*signal[:-1])
