@@ -115,3 +115,8 @@ samples/ms*.wav
 # plots
 plots/*
 dataset/*
+
+# random scripts
+extractor.py
+silremove.py
+
