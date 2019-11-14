@@ -50,3 +50,4 @@ def str_to_list(name):
     if type(name) is str:
         return list(name)
     return name
+
