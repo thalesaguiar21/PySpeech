@@ -134,7 +134,7 @@ def remove_silence(signals, frame, threshold=0.3):
 
 def _remove_silence(signal, frame, freq, threshold):
     or_frames = _split(signal, frame)
-    norm_frames = _split(normalise(signal.amps), frame)
+    norm_frames = _split(normalise(signal), frame)
     voiced_indexes = _get_voiced_indexes(norm_frames, threshold)
     voiced_frames = or_frames[voiced_indexes]
     return np.reshape(voiced_frames, voiced_frames.size)
@@ -154,6 +154,6 @@ def emphasize(signal, gain):
 
 
 def normalise(signal):
-    max_amp = np.absolute(signal).max()
-    return signal / max_amp
+    max_amp = np.absolute(signal.amps).max()
+    return signal.amps / max_amp
 
