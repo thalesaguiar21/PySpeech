@@ -61,7 +61,7 @@ class Signal:
     def __init__(self, amps, freq):
         self.amps = amps
         self.size = len(amps)
-        self.freq = freq
+        self.samplerate= freq
 
 
 def norm_log_pwoer_spectrum(signal, frame, nfft):
@@ -110,7 +110,7 @@ def split(signals, frame):
 
 
 def _split(signal, frame):
-    flen = frame.len(signal.freq)
+    flen = frame.len(signal.samplerate)
     nframes = int(math.floor(signal.size / flen))
     padding = flen - (signal.size - nframes*flen)
     padded_amps = np.append(signal.amps, np.zeros((padding)))
