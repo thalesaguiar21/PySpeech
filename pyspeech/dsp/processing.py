@@ -155,7 +155,12 @@ def emphasize(signal, gain):
 
 def normalise(signal):
     max_amp = np.absolute(signal.amps).max()
-    return signal.amps / max_amp
+    if max_amp == 0.0:
+        amps = signal.amps
+    else:
+        amps = signal.amps / max_amp
+    normalised_signal = Signal(amps, signal.samplerate)
+    return normalised_signal
 
 
 def find_best_nfft(freq, frame_length):
