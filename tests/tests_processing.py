@@ -1,6 +1,8 @@
 import math
 import unittest
 
+import numpy as np
+
 from .context import pyspeech
 import pyspeech.dsp.processing as sp
 
@@ -24,8 +26,32 @@ class TestsMinNFFT(unittest.TestCase):
         self.assertEqual(is_power_of_2(nfft), True)
 
 
-
-
 def is_power_of_2(x):
     return math.ceil(math.log2(x)) == math.floor(math.log2(x))
+
+
+class TestsNormalise(unittest.TestCase):
+
+    def test_inside(self):
+        signal = sp.Signal(np.arange(2*200), 200)
+        normalised_signal = sp.normalise(signal)
+        expected = np.arange(2*200) / 399
+        self.assertNumpyArrayEqual(expected, normalised_signal.amps)
+
+    def test_negative_amps(self):
+        signal = sp.Signal(np.arange(-300, 100), 200)
+        normalised_signal = sp.normalise(signal)
+        expected = np.arange(-300, 100) / 300
+        self.assertNumpyArrayEqual(expected, normalised_signal.amps)
+
+    def test_zero_as_max(self):
+        signal = sp.Signal(np.arange(2*200) * 0.0, 200)
+        normalised_signal = sp.normalise(signal)
+        expected = np.arange(2*200) * 0.0
+        self.assertNumpyArrayEqual(expected, normalised_signal.amps)
+
+    def assertNumpyArrayEqual(self, left, right):
+        left_list = left.tolist()
+        right_list = right.tolist()
+        self.assertListEqual(left_list, right_list)
 
