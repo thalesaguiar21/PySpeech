@@ -157,3 +157,10 @@ def normalise(signal):
     max_amp = np.absolute(signal.amps).max()
     return signal.amps / max_amp
 
+
+def find_best_nfft(freq, frame_length, nfft=1):
+    if nfft > freq * frame_length:
+        return nfft
+    else:
+        return find_best_nfft(freq, frame_length, nfft*2)
+
