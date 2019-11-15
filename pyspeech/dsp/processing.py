@@ -158,9 +158,12 @@ def normalise(signal):
     return signal.amps / max_amp
 
 
-def find_best_nfft(freq, frame_length, nfft=1):
-    if nfft > freq * frame_length:
+def find_best_nfft(freq, frame_length):
+    if freq > 0 and frame_length > 0:
+        nfft = 1
+        while nfft < freq * frame_length:
+            nfft *= 2
         return nfft
     else:
-        return find_best_nfft(freq, frame_length, nfft*2)
+        raise ValueError('Frame length and frequency must be greater than zero')
 
