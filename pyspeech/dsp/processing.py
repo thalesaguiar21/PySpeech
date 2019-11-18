@@ -84,7 +84,7 @@ def mag_spectrum(signal):
     return np.absolute(spectrum)
 
 
-def split(signals, frame):
+def split(signals):
     """ Splits signals into frames
 
     Args:
@@ -104,11 +104,11 @@ def split(signals, frame):
          [22998, 22999]]
     """
     for signal in signals:
-       yield _split(signal, frame)
+       yield _split(signal)
 
 
-def _split(signal, frame):
-    flen = frame.len(signal.samplerate)
+def _split(signal):
+    flen = frame_len(signal.samplerate)
     nframes = int(math.floor(signal.size / flen))
     padding = flen - (signal.size - nframes*flen)
     padded_amps = np.append(signal.amps, np.zeros((padding)))
