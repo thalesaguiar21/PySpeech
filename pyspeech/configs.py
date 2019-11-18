@@ -1,7 +1,7 @@
 import numpy as np
 
 
-config = {
+confs = {
     'proc': {
         'nfft': 512,
         'frame_size': 25,
