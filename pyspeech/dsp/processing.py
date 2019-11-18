@@ -127,7 +127,7 @@ def remove_silence(signals, threshold=0.3):
         The signal with amplitudes > threshold
     """
     for signal in signals:
-        yield _remove_silence(signal, frame, threshold)
+        yield _remove_silence(signal, threshold)
 
 
 def _remove_silence(signal, freq, threshold):
