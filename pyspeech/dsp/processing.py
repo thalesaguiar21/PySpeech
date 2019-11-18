@@ -6,6 +6,9 @@ import math
 import numpy as np
 
 
+from pyspeech.configs import confs
+
+
 class Processor:
     """ """
     def __init__(self, frame, emph, nfft):
@@ -37,17 +40,12 @@ class Processor:
         return padded_signal[indices.astype(np.int32, copy=False)]
 
 
-class Frame:
+def frame_len(size, freq):
+    return int(round(size/1000. * freq))
 
-    def __init__(self, size, stride):
-        self.size = size
-        self.stride = stride
 
-    def length(self, freq):
-        return int(round(self.size/1000. * freq))
-
-    def step(self, freq):
-        return int(round(self.stride/1000. * freq))
+def frame_step(stride, freq):
+    return int(round(stride/1000. *freq))
 
 
 class Signal:
@@ -64,7 +62,7 @@ class Signal:
         self.samplerate= freq
 
 
-def norm_log_pwoer_spectrum(signal, frame, nfft):
+def norm_log_power_spectrum(signal, frame, nfft):
     log_spec = _log_power_spectrum(signal, frame, nfft)
     return log_spec - np.max(log_spec)
 
@@ -118,7 +116,7 @@ def _split(signal, frame):
     return frames
 
 
-def remove_silence(signals, frame, threshold=0.3):
+def remove_silence(signals, threshold=0.3):
     """ Removes silence from signal based on maximum aplitude
 
     Args:
@@ -132,9 +130,9 @@ def remove_silence(signals, frame, threshold=0.3):
         yield _remove_silence(signal, frame, threshold)
 
 
-def _remove_silence(signal, frame, freq, threshold):
-    or_frames = _split(signal, frame)
-    norm_frames = _split(normalise(signal), frame)
+def _remove_silence(signal, freq, threshold):
+    or_frames = _split(signal)
+    norm_frames = _split(normalise(signal))
     voiced_indexes = _get_voiced_indexes(norm_frames, threshold)
     voiced_frames = or_frames[voiced_indexes]
     return np.reshape(voiced_frames, voiced_frames.size)
@@ -163,10 +161,11 @@ def normalise(signal):
     return normalised_signal
 
 
-def find_best_nfft(freq, frame_length):
-    if freq > 0 and frame_length > 0:
+def find_best_nfft(freq, flen=None):
+    flen = frame_len(confs['frame_size'], freq) if flen is None else flen
+    if freq > 0 and flen > 0:
         nfft = 1
-        while nfft < freq * frame_length:
+        while nfft < freq * flen:
             nfft *= 2
         return nfft
     else:
