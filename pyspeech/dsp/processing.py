@@ -70,7 +70,7 @@ def remove_silence(signals, threshold=0.3):
         yield _remove_silence(signal, threshold)
 
 
-def _remove_silence(signal, freq, threshold):
+def _remove_silence(signal, threshold):
     or_frames = _split(signal)
     norm_frames = _split(normalise(signal))
     voiced_indexes = _get_voiced_indexes(norm_frames, threshold)
@@ -81,7 +81,7 @@ def _remove_silence(signal, freq, threshold):
 def _get_voiced_indexes(frames, threshold):
     nframes = frames.shape[0]
     non_sil_indexes = []
-    for i in range(nframes + 1):
+    for i in range(nframes):
         if np.absolute(frames[i]).max() > threshold:
             non_sil_indexes.append(i)
     return non_sil_indexes

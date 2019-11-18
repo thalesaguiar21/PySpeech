@@ -81,3 +81,26 @@ class TestsSplit(unittest.TestCase):
         self.assertEqual(0, frames[0][-1, -1])
         self.assertEqual(0, frames[0][-1, -2])
 
+class TestsSilRemove(unittest.TestCase):
+
+    def test_remove_max_amp_20_from_40(self):
+        confs['frame_size'] = 200  # ms
+        confs['frame_stride'] = 100  # ms
+        signal = sp.Signal(np.arange(-20, 20), 20)
+
+        voiced_amps = list(sp.remove_silence([signal], 0.3))[0]
+        voiced_signal = sp.Signal(voiced_amps, 20)
+        norm_voiced  = sp.normalise(voiced_signal)
+
+        breakpoint()
+        max_amps = np.array([-0.85, -0.75, -0.65, -0.55, -0.45, -0.35,
+         0.35,  0.45,  0.55,  0.65,  0.75,  0.85, 0.95])
+        self.assertNumpyArrayEqual(max_amps, norm_voiced.amps.max(axis=1))
+
+    def assertNumpyArrayEqual(self, left, right):
+        left_list = left.tolist()
+        right_list = right.tolist()
+        self.assertListEqual(left_list, right_list)
+
+
+
