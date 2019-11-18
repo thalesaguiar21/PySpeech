@@ -56,3 +56,13 @@ class TestsNormalise(unittest.TestCase):
         right_list = right.tolist()
         self.assertListEqual(left_list, right_list)
 
+class TestsSplit(unittest.TestCase):
+
+    def test_split_19_frames_dim_4(self):
+        confs['frame_size'] = 200  # ms
+        confs['frame_stride'] = 100  # ms
+        signal = sp.Signal(np.arange(-20, 20), 20)
+        frames = list(sp.split([signal]))
+        self.assertEqual(19, frames[0].shape[0])
+
+

@@ -9,12 +9,12 @@ import numpy as np
 from pyspeech.configs import confs
 
 
-def frame_len(size, freq):
-    return int(round(size/1000. * freq))
+def frame_len(freq):
+    return int(round(confs['frame_size']/1000. * freq))
 
 
-def frame_step(stride, freq):
-    return int(round(stride/1000. *freq))
+def frame_step(freq):
+    return int(round(confs['frame_stride']/1000. *freq))
 
 
 def split(signals):
@@ -42,10 +42,13 @@ def split(signals):
 
 def _split(signal):
     flen = frame_len(signal.samplerate)
-    nframes = int(math.floor(signal.size / flen))
+    fstep = frame_step(signal.samplerate)
+    nframes = 1 + int(math.floor((signal.size - flen) / fstep ))
     padding = flen - (signal.size - nframes*flen)
     padded_amps = np.append(signal.amps, np.zeros((padding)))
-    frames = np.reshape(padded_amps, (nframes + 1, flen))
+    indices = np.tile(np.arange(0, flen), (nframes, 1)) + np.tile(np.arange(0, nframes * fstep, fstep), (flen, 1)).T
+    indices.astype(dtype=np.int32)
+    frames = padded_amps[indices]
     return frames
 
 
