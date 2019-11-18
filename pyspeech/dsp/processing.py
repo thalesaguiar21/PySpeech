@@ -42,11 +42,15 @@ def split(signals):
 
 def _split(signal):
     flen = frame_len(signal.samplerate)
-    fstep = frame_step(signal.samplerate)
-    nframes = 1 + int(math.floor((signal.size - flen) / fstep ))
-    padding = flen - (signal.size - nframes*flen)
+    fstride= frame_step(signal.samplerate)
+    if fstride == 0:
+        fstride = 1
+        nframes = int(signal.amps.size / flen)
+    else:
+        nframes = 1 + int(math.floor((signal.size - flen) / fstride))
+    padding = (nframes-1)*fstride + flen - signal.size
     padded_amps = np.append(signal.amps, np.zeros((padding)))
-    indices = np.tile(np.arange(0, flen), (nframes, 1)) + np.tile(np.arange(0, nframes * fstep, fstep), (flen, 1)).T
+    indices = np.tile(np.arange(0, flen), (nframes, 1)) + np.tile(np.arange(0, nframes * fstride, fstride), (flen, 1)).T
     indices.astype(dtype=np.int32)
     frames = padded_amps[indices]
     return frames

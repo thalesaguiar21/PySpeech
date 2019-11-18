@@ -65,4 +65,3 @@ class TestsSplit(unittest.TestCase):
         frames = list(sp.split([signal]))
         self.assertEqual(19, frames[0].shape[0])
 
-
