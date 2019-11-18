@@ -37,15 +37,14 @@ def split(signals):
          [22998, 22999]]
     """
     for signal in signals:
-       yield _split(signal)
+       yield _split_striding(signal)
 
 
-def _split(signal):
+def _split_striding(signal):
     flen = frame_len(signal.samplerate)
     fstride= frame_step(signal.samplerate)
-    if fstride == 0:
-        fstride = 1
-        nframes = int(signal.amps.size / flen)
+    if flen > signal.size:
+        nframes = 1
     else:
         nframes = 1 + int(math.ceil((signal.size - flen) / fstride))
     padding = (nframes-1)*fstride + flen - signal.size
@@ -76,6 +75,16 @@ def _remove_silence(signal, threshold):
     voiced_indexes = _get_voiced_indexes(norm_frames, threshold)
     voiced_frames = or_frames[voiced_indexes]
     return np.reshape(voiced_frames, voiced_frames.size)
+
+
+def _split(signal):
+    flen = frame_len(signal.samplerate)
+    nframes = math.ceil(signal.size / flen)
+    padlen = nframes*flen - signal.size
+
+    pad_amps = np.append(signal.amps, np.zeros(padlen))
+    frames = np.reshape(pad_amps, (nframes, flen))
+    return frames
 
 
 def _get_voiced_indexes(frames, threshold):
