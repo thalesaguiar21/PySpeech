@@ -47,7 +47,7 @@ def _split(signal):
         fstride = 1
         nframes = int(signal.amps.size / flen)
     else:
-        nframes = 1 + int(math.floor((signal.size - flen) / fstride))
+        nframes = 1 + int(math.ceil((signal.size - flen) / fstride))
     padding = (nframes-1)*fstride + flen - signal.size
     padded_amps = np.append(signal.amps, np.zeros((padding)))
     indices = np.tile(np.arange(0, flen), (nframes, 1)) + np.tile(np.arange(0, nframes * fstride, fstride), (flen, 1)).T
