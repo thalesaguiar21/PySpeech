@@ -17,20 +17,6 @@ def frame_step(stride, freq):
     return int(round(stride/1000. *freq))
 
 
-class Signal:
-    """ A simple class to represent a digital signal
-
-    Atributes:
-        amps (ndarray): The amplitudes
-        size (ndarray): The signal length
-        freq (ndarray): The sampling rate
-    """
-    def __init__(self, amps, freq):
-        self.amps = amps
-        self.size = len(amps)
-        self.samplerate= freq
-
-
 def split(signals):
     """ Splits signals into frames
 
@@ -106,6 +92,20 @@ def normalise(signal):
         amps = signal.amps / max_amp
     normalised_signal = Signal(amps, signal.samplerate)
     return normalised_signal
+
+
+class Signal:
+    """ A simple class to represent a digital signal
+
+    Atributes:
+        amps (ndarray): The amplitudes
+        size (ndarray): The signal length
+        freq (ndarray): The sampling rate
+    """
+    def __init__(self, amps, freq):
+        self.amps = amps
+        self.size = len(amps)
+        self.samplerate= freq
 
 
 def find_best_nfft(freq, flen=None):
