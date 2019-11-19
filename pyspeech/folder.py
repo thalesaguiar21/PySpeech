@@ -13,9 +13,9 @@ def find_files(folder_path, extension):
 
 
 def find_wav_files(folder_path):
-    return _find_files(folder_path, "wav")
+    return find_files(folder_path, "wav")
 
 
 def find_txt_files(folder_path):
-    return _find_files(folder_path, "txt")
+    return find_files(folder_path, "txt")
 
