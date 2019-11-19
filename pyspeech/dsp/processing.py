@@ -108,7 +108,7 @@ class Signal:
     Atributes:
         amps (ndarray): The amplitudes
         size (ndarray): The signal length
-        freq (ndarray): The sampling rate
+        samplerate (int): The sampling rate on Hz
     """
     def __init__(self, amps, freq):
         self.amps = amps
