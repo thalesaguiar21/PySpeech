@@ -1,7 +1,7 @@
 import os
 
 
-def _find_files(folder_path, extension):
+def find_files(folder_path, extension):
     dt_files = []
     for dirpath, dirname, fnames in os.walk(folder_path):
         dirname.sort()
@@ -18,3 +18,4 @@ def find_wav_files(folder_path):
 
 def find_txt_files(folder_path):
     return _find_files(folder_path, "txt")
+
