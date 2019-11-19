@@ -96,11 +96,10 @@ def emphasize(signals, gain):
 def normalise(signal):
     max_amp = np.absolute(signal.amps).max()
     if max_amp == 0.0:
-        amps = signal.amps
+        normalised_amps = signal.amps
     else:
-        amps = signal.amps / max_amp
-    normalised_signal = Signal(amps, signal.samplerate)
-    return normalised_signal
+        normalised_amps = signal.amps / max_amp
+    return Signal(normalised_amps, signal.samplerate)
 
 
 class Signal:
