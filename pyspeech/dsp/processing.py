@@ -24,13 +24,13 @@ def split_with_stride(signal):
         signals (list:Signal): The signals to be split
         frame (Frame): The frame size and stride
 
-    Yields:
+    Returns:
         frames (ndarray): The frammed signal
 
     Example:
         >>> sig = Signal(np.arange(24000), 80)
         >>> frame = Frame(25, 10)
-        >>> list(split(signal, frame))
+        >>> split_with_stride(signal, frame)
         [[1, 2],
          [2, 3],
          ...
