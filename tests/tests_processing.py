@@ -62,24 +62,24 @@ class TestsSplit(unittest.TestCase):
         confs['frame_size'] = 200  # ms
         confs['frame_stride'] = 100  # ms
         signal = sp.Signal(np.arange(-20, 20), 20)
-        frames = list(sp.split([signal]))
-        self.assertEqual(19, frames[0].shape[0])
+        frames = sp.split_with_stride(signal)
+        self.assertEqual(19, frames.shape[0])
 
     def test_padding_0(self):
         confs['frame_size'] = 200  # ms
         confs['frame_stride'] = 100  # ms
         signal = sp.Signal(np.arange(-20, 20), 20)
-        frames = list(sp.split([signal]))
-        self.assertEqual(76, frames[0].size)
+        frames = sp.split_with_stride(signal)
+        self.assertEqual(76, frames.size)
 
     def test_padding_2_zeros(self):
         confs['frame_size'] = 300  # ms
         confs['frame_stride'] = 150  # ms
         signal = sp.Signal(np.arange(-20, 20), 20)
-        frames = list(sp.split([signal]))
-        self.assertEqual(78, frames[0].size)
-        self.assertEqual(0, frames[0][-1, -1])
-        self.assertEqual(0, frames[0][-1, -2])
+        frames = sp.split_with_stride(signal)
+        self.assertEqual(78, frames.size)
+        self.assertEqual(0, frames[-1, -1])
+        self.assertEqual(0, frames[-1, -2])
 
 class TestsSilRemove(unittest.TestCase):
 

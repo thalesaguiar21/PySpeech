@@ -17,7 +17,7 @@ def frame_step(freq):
     return int(round(confs['frame_stride']/1000. *freq))
 
 
-def split(signals):
+def split_with_stride(signal):
     """ Splits signals into frames
 
     Args:
@@ -36,11 +36,6 @@ def split(signals):
          ...
          [22998, 22999]]
     """
-    for signal in signals:
-       yield _split_striding(signal)
-
-
-def _split_striding(signal):
     flen = frame_len(signal.samplerate)
     fstride= frame_step(signal.samplerate)
     if flen > signal.size:
@@ -49,8 +44,9 @@ def _split_striding(signal):
         nframes = 1 + int(math.ceil((signal.size - flen) / fstride))
     padding = (nframes-1)*fstride + flen - signal.size
     padded_amps = np.append(signal.amps, np.zeros((padding)))
-    indices = np.tile(np.arange(0, flen), (nframes, 1)) + np.tile(np.arange(0, nframes * fstride, fstride), (flen, 1)).T
-    indices.astype(dtype=np.int32)
+    base_idx = np.tile(np.arange(0, flen), (nframes, 1))
+    idx_step = np.tile(np.arange(0, nframes * fstride, fstride), (flen, 1)).T
+    indices = (base_idx + idx_step).astype(dtype=np.int32)
     frames = padded_amps[indices]
     return frames
 
@@ -96,8 +92,10 @@ def _get_voiced_indexes(frames, threshold):
     return non_sil_indexes
 
 
-def emphasize(signal, gain):
-    return np.append(signal[0], signal[1:] - gain*signal[:-1])
+def emphasize(signals, gain):
+    for signal in list(signals):
+        signal.amps = np.append(signal[0], signal[1:] - gain*signal[:-1])
+        yield signal
 
 
 def normalise(signal):
