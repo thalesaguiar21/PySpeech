@@ -19,10 +19,8 @@ def delta(feats, smooth=2):
     return deltas / denom
 
 
-def log_energy(signal, emph, frame, lfreq, hfreq):
-    wnd_signal = sproc.split(signal, frame)
-    pow_spec = sproc.power_spectrum(wnd_signal, nfft)
-    energies = np.sum(pow_spec, axis=1)
-    bounded_energies = np.fmax(energy, np.finfo(np.float64).eps)
-    return bounded_energies
+def log_energy(frames):
+    energies = np.sum(frames, axis=1)
+    energies_bounded = np.fmax(energies, np.finfo(np.float64).eps)
+    return np.log(energies_bounded)
 
