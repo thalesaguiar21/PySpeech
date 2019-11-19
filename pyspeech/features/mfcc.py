@@ -3,13 +3,17 @@ import scipy.fftpack as scifft
 
 import pyspeech.dsp.processing as sp
 import pyspeech.dsp.spectrum as spec
+import pyspeech.dsp.metrics as smet
 from pyspeech.configs import confs
 
 
 def _extract(signal, nfilt, ncep, highfreq, lowfreq, emph):
     wnd_signal = make_frames_and_spectrum(signal, emph)
     power_spectrum = spec.power(wnd_signal)
-    filter_banks = apply_filter_banks(power_spectrum, highfreq, lowfreq)
+    filter_banks = make_filter_banks(power_spectrum, highfreq, lowfreq,
+                                     nfilt, signal.samplerate)
+
+    fbanks_energies = power_spectrum @ filter_banks.T
 
 
 def make_frames_and_spectrum(signal, emph):
@@ -19,8 +23,20 @@ def make_frames_and_spectrum(signal, emph):
     return ham_frames
 
 
-def apply_filter_banks(power_spec, highfreq, lowfreq):
-    highfreq = highfreq if highfreq is not None else signal.samplerate/2
+def make_filter_banks(power_spec, highfreq, lowfreq, nfilt, srate):
+    highfreq = highfreq if highfreq is not None else srate/2
+    highmel = smet.hz_to_mel(highfreq)
+    lowmel = smet.hz_to_mel(lowfreq)
+    mel_points = np.linspace(lowmel, highmel, nfilt + 2)
+    bins = np.floor((confs['nfft'] + 1)*smet.mel_to_hz(mel_points) / srate)
+
+    fbanks = np.zeros((nfilt, confs['nfft']//2 + 1 ))
+    for j in range(nfilt):
+        for i in range(int(bins[j]), int(bins[j + 1])):
+            fbanks[j, i] = (i-bins[j]) / (bins[j + 1]-bins[j])
+        for i in range(int(bins[j + 1]), int(bins[j + 2])):
+            fbanks[j, i] = (bins[j + 2]-i) / (bins[j + 2]-bins[j + 1])
+    return fbanks
 
 
 def make_means_and_deltas(signals, frequencies, nfilt, processor, cepstrums):
