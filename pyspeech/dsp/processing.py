@@ -88,8 +88,8 @@ def _get_voiced_indexes(frames, threshold):
     return non_sil_indexes
 
 
-def emphasize(signals, gain):
-    emph_amps = np.append(signal[0], signal[1:] - gain*signal[:-1])
+def emphasize(signal, gain):
+    emph_amps = np.append(signal.amps[0], signal.amps[1:] - gain*signal.amps[:-1])
     return Signal(emph_amps, signal.samplerate)
 
 
