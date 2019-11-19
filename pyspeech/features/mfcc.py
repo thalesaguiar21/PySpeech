@@ -4,10 +4,11 @@ import scipy.fftpack as scifft
 import pyspeech.dsp.processing as sp
 import pyspeech.dsp.spectrum as spec
 import pyspeech.dsp.metrics as smet
+import pyspeech.features.derivs as sder
 from pyspeech.configs import confs
 
 
-def _extract(signal, nfilt, ncep, emph, ceplift, lowfreq, highfreq=None):
+def extract(signal, nfilt, ncep, emph, ceplift, lowfreq, highfreq=None):
     wnd_signal = make_frames_and_spectrum(signal, emph)
     power_spectrum = spec.power(wnd_signal)
     filter_banks = make_filter_banks(power_spectrum, highfreq, lowfreq,

@@ -27,6 +27,6 @@ class TestsMFCC(unittest.TestCase):
         self.signal = sp.Signal(amps, samplerate)
 
     def extract(self):
-        mfcc._extract(self.signal, self.nfilt, self.ncep, self.emph,
-                      self.ceplift, self.lowfreq, self.highfreq)
+        mfcc.extract(self.signal, self.nfilt, self.ncep, self.emph,
+                     self.ceplift, self.lowfreq, self.highfreq)
 
