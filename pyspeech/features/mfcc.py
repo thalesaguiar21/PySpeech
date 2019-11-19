@@ -9,8 +9,35 @@ from pyspeech.configs import confs
 
 
 def extract(signal, nfilt, ncep, emph, ceplift, lowfreq, highfreq=None):
+    features = np.array([])
+    if confs['append_energy']:
+        features = _extract_mfcc_and_energy(signal, nfilt, ncep, emph, ceplift,
+                                            lowfreq, highfreq)
+    else:
+        features = _extract_mfcc(signal, nfilt, ncep, emph, ceplift, lowfreq,
+                                 highfreq)
+    return features
+
+
+def _extract_mfcc(signal, nfilt, ncep, emph, ceplift, lowfreq, highfreq=None):
     wnd_signal = make_frames_and_spectrum(signal, emph)
     power_spectrum = spec.power(wnd_signal)
+    filter_banks = make_filter_banks(power_spectrum, highfreq, lowfreq,
+                                     nfilt, signal.samplerate)
+
+    fbanks_energies = power_spectrum @ filter_banks.T
+    # Prevent zero for log
+    fbanks_energies_cut = np.fmax(fbanks_energies, np.finfo(np.float64).eps)
+    fbanks_log = np.log(fbanks_energies_cut)
+    cepstrums = scifft.dct(fbanks_log, type=2, axis=1, norm='ortho')[:, :ncep]
+    lifted_cepstrums = lifter(cepstrums, ceplift)
+    return lifted_cepstrums
+
+def _extract_mfcc_and_energy(signal, nfilt, ncep, emph, ceplift, lowfreq,
+                             highfreq=None):
+    wnd_signal = make_frames_and_spectrum(signal, emph)
+    power_spectrum = spec.power(wnd_signal)
+    log_energies = sder.log_energy(power_spectrum)
     filter_banks = make_filter_banks(power_spectrum, highfreq, lowfreq,
                                      nfilt, signal.samplerate)
 
