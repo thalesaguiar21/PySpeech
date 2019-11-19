@@ -89,9 +89,8 @@ def _get_voiced_indexes(frames, threshold):
 
 
 def emphasize(signals, gain):
-    for signal in list(signals):
-        signal.amps = np.append(signal[0], signal[1:] - gain*signal[:-1])
-        yield signal
+    emph_amps = np.append(signal[0], signal[1:] - gain*signal[:-1])
+    return Signal(emph_amps, signal.samplerate)
 
 
 def normalise(signal):
