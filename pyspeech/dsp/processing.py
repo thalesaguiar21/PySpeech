@@ -51,26 +51,22 @@ def split_with_stride(signal):
     return frames
 
 
-def remove_silence(signals, threshold=0.3):
+def remove_silence(signal, threshold):
     """ Removes silence from signal based on maximum aplitude
 
     Args:
         signal (list:Signal): The signals to remove silence
         frame (Frame): The frame size and stride
 
-    Yield:
+    Returns:
         The signal with amplitudes > threshold
     """
-    for signal in signals:
-        yield _remove_silence(signal, threshold)
-
-
-def _remove_silence(signal, threshold):
     or_frames = _split(signal)
     norm_frames = _split(normalise(signal))
     voiced_indexes = _get_voiced_indexes(norm_frames, threshold)
     voiced_frames = or_frames[voiced_indexes]
-    return np.reshape(voiced_frames, voiced_frames.size)
+    voiced_amps = np.reshape(voiced_frames, voiced_frames.size)
+    return Signal(voiced_amps, signal.samplerate)
 
 
 def _split(signal):

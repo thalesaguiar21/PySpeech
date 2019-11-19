@@ -87,9 +87,9 @@ class TestsSilRemove(unittest.TestCase):
         confs['frame_size'] = 200  # ms
         signal = sp.Signal(np.arange(-20, 20), 20)
 
-        voiced_amps = list(sp.remove_silence([signal]))[0]
+        voiced_signal = sp.remove_silence(signal, 0.3)
         expected = np.append(signal.amps[:16], signal.amps[24:])
-        self.assertNumpyArrayEqual(expected, voiced_amps)
+        self.assertNumpyArrayEqual(expected, voiced_signal.amps)
 
     def assertNumpyArrayEqual(self, left, right):
         left_list = left.tolist()
