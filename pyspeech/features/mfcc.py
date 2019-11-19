@@ -20,7 +20,7 @@ def extract(signal, nfilt, ncep, emph, ceplift, lowfreq, highfreq=None):
 
 
 def _extract_mfcc(signal, nfilt, ncep, emph, ceplift, lowfreq, highfreq=None):
-    wnd_signal = make_frames_and_spectrum(signal, emph)
+    wnd_signal = make_frames_and_window(signal, emph)
     power_spectrum = spec.power(wnd_signal)
     filter_banks = make_filter_banks(power_spectrum, highfreq, lowfreq,
                                      nfilt, signal.samplerate)
@@ -35,7 +35,7 @@ def _extract_mfcc(signal, nfilt, ncep, emph, ceplift, lowfreq, highfreq=None):
 
 def _extract_mfcc_and_energy(signal, nfilt, ncep, emph, ceplift, lowfreq,
                              highfreq=None):
-    wnd_signal = make_frames_and_spectrum(signal, emph)
+    wnd_signal = make_frames_and_window(signal, emph)
     power_spectrum = spec.power(wnd_signal)
     log_energies = sder.log_energy(power_spectrum)
     filter_banks = make_filter_banks(power_spectrum, highfreq, lowfreq,
@@ -50,7 +50,7 @@ def _extract_mfcc_and_energy(signal, nfilt, ncep, emph, ceplift, lowfreq,
     return lifted_cepstrums
 
 
-def make_frames_and_spectrum(signal, emph):
+def make_frames_and_window(signal, emph):
     emph_signal = sp.emphasize(signal, emph)
     frames = sp.split_with_stride(signal)
     ham_frames = frames * np.hamming(sp.frame_len(confs['frame_size']))
