@@ -13,6 +13,7 @@ class TestsMFCC(unittest.TestCase):
         self.mfilter = mfcc.MelFilter(40, 4000, 300)
         self.emph = 0.97
         self.signnal = sp.Signal([], 0)
+        confs['append_energy'] = True
 
     def test_signal_200l_20hz(self):
         self.make_signal(32000, 8000)
@@ -28,6 +29,12 @@ class TestsMFCC(unittest.TestCase):
         confs['append_energy'] = False
         mfccs = self.extract()
         self.assertEqual(mfccs.shape[1], self.mfcc.ncep)
+
+    def test_no_zero(self):
+        self.make_signal(32000, 8000)
+        mfccs = self.extract()
+        nzeros = np.count_nonzero(mfccs) - mfccs.size
+        self.assertEqual(0, nzeros)
 
     def make_signal(self, slen, samplerate):
         amps = np.arange(slen)
