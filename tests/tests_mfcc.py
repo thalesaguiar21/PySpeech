@@ -23,6 +23,12 @@ class TestsMFCC(unittest.TestCase):
         mfccs = self.extract()
         self.assertEqual(mfccs.shape[1], 14)
 
+    def test_no_energy_append(self):
+        self.make_signal(32000, 8000)
+        confs['append_energy'] = False
+        mfccs = self.extract()
+        self.assertEqual(mfccs.shape[1], self.mfcc.ncep)
+
     def make_signal(self, slen, samplerate):
         amps = np.arange(slen)
         self.signal = sp.Signal(amps, samplerate)
