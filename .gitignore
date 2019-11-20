@@ -120,3 +120,6 @@ dataset/*
 extractor.py
 silremove.py
 
+# vim
+*.swp
+
