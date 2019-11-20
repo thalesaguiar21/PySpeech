@@ -16,12 +16,17 @@ class TestsMFCC(unittest.TestCase):
 
     def test_signal_200l_20hz(self):
         self.make_signal(32000, 8000)
-        self.extract()
+        mfccs = self.extract()
+
+    def test_has_energy(self):
+        self.make_signal(32000, 8000)
+        mfccs = self.extract()
+        self.assertEqual(mfccs.shape[1], 14)
 
     def make_signal(self, slen, samplerate):
         amps = np.arange(slen)
         self.signal = sp.Signal(amps, samplerate)
 
     def extract(self):
-        mfccs = mfcc.extract(self.signal, self.mfcc, self.mfilter, self.emph)
+        return mfcc.extract(self.signal, self.mfcc, self.mfilter, self.emph)
 
