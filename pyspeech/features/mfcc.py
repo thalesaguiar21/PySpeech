@@ -27,10 +27,7 @@ def _extract_mfcc_and_energy(powspec, mfcc, melfilter, srate):
 
 
 def _extract_mfcc(powspec, mfcc, melfilter, srate):
-    filter_banks = make_filter_banks(melfilter, srate)
-    fbanks_energies = powspec @ filter_banks.T
-    fbanks_energies_cut = np.fmax(fbanks_energies, np.finfo(np.float64).eps)
-    fbanks_log = np.log(fbanks_energies_cut)
+    fbanks_log = _make_log_fbanks(powspec, melfilter, srate)
     cepstrums = scifft.dct(fbanks_log, type=2, axis=1, norm='ortho')
     cepstrums_cut = cepstrums[:, :mfcc.ncep]
     lifted_cepstrums = lifter(cepstrums_cut, mfcc.lift)
@@ -51,7 +48,7 @@ def make_frames_and_window(signal, emph):
 
 def _make_log_fbanks(powspec, melfilter, srate):
     fbanks = make_filter_banks(melfilter, srate)
-    fbanks_energies = powspec @ fbanks
+    fbanks_energies = powspec @ fbanks.T
     bounded_fbanks = np.fmax(fbanks_energies, np.finfo(np.float64).eps)
     return np.log(bounded_fbanks)
 
