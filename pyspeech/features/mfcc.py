@@ -49,6 +49,13 @@ def make_frames_and_window(signal, emph):
     return ham_frames
 
 
+def _make_log_fbanks(powspec, melfilter, srate):
+    fbanks = make_filter_banks(melfilter, srate)
+    fbanks_energies = powspec @ fbanks
+    bounded_fbanks = np.fmax(fbanks_energies, np.finfo(np.float64).eps)
+    return np.log(bounded_fbanks)
+
+
 def make_filter_banks(melfilter, srate):
     bins = _make_bins(melfilter, srate)
     return _make_fbanks(melfilter, bins)
