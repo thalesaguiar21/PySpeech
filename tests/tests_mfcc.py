@@ -21,7 +21,7 @@ class TestsMFCC(unittest.TestCase):
     def test_has_energy(self):
         self.make_signal(32000, 8000)
         mfccs = self.extract()
-        self.assertEqual(mfccs.shape[1], 14)
+        self.assertEqual(mfccs.shape[1], self.mfcc.ncep + 1)
 
     def test_no_energy_append(self):
         self.make_signal(32000, 8000)
