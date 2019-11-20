@@ -27,7 +27,7 @@ def _extract_mfcc_and_energy(powspec, mfcc, melfilter, srate):
 
 
 def _extract_mfcc(powspec, mfcc, melfilter, srate):
-    filter_banks = make_filter_banks(powspec, melfilter, srate)
+    filter_banks = make_filter_banks(melfilter, srate)
     fbanks_energies = powspec @ filter_banks.T
     fbanks_energies_cut = np.fmax(fbanks_energies, np.finfo(np.float64).eps)
     fbanks_log = np.log(fbanks_energies_cut)
@@ -49,7 +49,7 @@ def make_frames_and_window(signal, emph):
     return ham_frames
 
 
-def make_filter_banks(power_spec, melfilter, srate):
+def make_filter_banks(melfilter, srate):
     if melfilter.highfreq is None:
         melfilter.highfreq = srate/2
     highmel = smet.hz_to_mel(melfilter.highfreq)
