@@ -50,13 +50,21 @@ def make_frames_and_window(signal, emph):
 
 
 def make_filter_banks(melfilter, srate):
+    bins = _make_bins(melfilter, srate)
+    return _make_fbanks(melfilter, bins)
+
+
+def _make_bins(melfilter, srate):
     if melfilter.highfreq is None:
         melfilter.highfreq = srate/2
     highmel = smet.hz_to_mel(melfilter.highfreq)
     lowmel = smet.hz_to_mel(melfilter.lowfreq)
     mel_points = np.linspace(lowmel, highmel, melfilter.nfilt + 2)
     bins = np.floor((confs['nfft'] + 1)*smet.mel_to_hz(mel_points) / srate)
+    return bins
 
+
+def _make_fbanks(melfilter, bins):
     fbanks = np.zeros((melfilter.nfilt, confs['nfft']//2 + 1 ))
     for j in range(melfilter.nfilt):
         for i in range(int(bins[j]), int(bins[j + 1])):
