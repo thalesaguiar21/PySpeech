@@ -11,6 +11,18 @@ from pyspeech.configs import confs
 
 
 def extract(signal, mfcc, melfilter, emph):
+    """ Extract the Mel-Frequency Cepstrum Coefficients from a signal
+
+    Note:
+        If confs['append_energy'] is True, this function will append the log
+        energy of each frame
+
+    Args:
+        emph (float): The emphasis to the signal
+
+    Returns:
+        The log-energy + MFCC or MFCC
+    """
     powspec = _make_power_spectrum(signal, emph)
     srate = signal.samplerate
     if confs['append_energy']:
