@@ -35,11 +35,11 @@ def _extract_mfcc(powspec, mfcc, melfilter, srate):
 
 
 def _make_power_spectrum(signal, emph):
-    wnd_signal = make_frames_and_window(signal, emph)
+    wnd_signal = _make_frames_and_window(signal, emph)
     return spec.power(wnd_signal)
 
 
-def make_frames_and_window(signal, emph):
+def _make_frames_and_window(signal, emph):
     emph_signal = sp.emphasize(signal, emph)
     frames = sp.split_with_stride(signal)
     ham_frames = frames * np.hamming(sp.frame_len(confs['frame_size']))
@@ -47,13 +47,13 @@ def make_frames_and_window(signal, emph):
 
 
 def _make_log_fbanks(powspec, melfilter, srate):
-    fbanks = make_filter_banks(melfilter, srate)
+    fbanks = _make_filter_banks(melfilter, srate)
     fbanks_energies = powspec @ fbanks.T
     bounded_fbanks = np.fmax(fbanks_energies, np.finfo(np.float64).eps)
     return np.log(bounded_fbanks)
 
 
-def make_filter_banks(melfilter, srate):
+def _make_filter_banks(melfilter, srate):
     bins = _make_bins(melfilter, srate)
     return _make_fbanks(melfilter, bins)
 
