@@ -5,6 +5,12 @@ import numpy as np
 from ..dsp import processing as sproc
 
 
+def by_duration(signals, fs, duration=500):
+    samplesize = math.ceil(duration/1000 * fs) # Duration in number of samples
+    splits = _split_all(signals, samplesize)
+    return splits
+
+
 def by_shortest(signals, fs):
     splits = by_scalar_shortest(signals, fs, 1)
     return splits
