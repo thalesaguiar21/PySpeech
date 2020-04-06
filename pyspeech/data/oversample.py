@@ -16,9 +16,23 @@ def by_duration(signals, fs, duration=500):
     Returns:
         dataset (ndarray): splits of signals of the specified duration
     """
+    max_duration = _find_max_duration(signals, fs)
+    if max_duration < duration:
+        raise Warning(f"Longest signal has {max_duration}ms, using this instead"
+                      f" of {duration}ms")
+    duration = min(max_duration, duration)
+
     samplesize = math.ceil(duration/1000 * fs) # Duration in number of samples
     splits = _split_all(signals, samplesize)
     return splits
+
+
+def _find_max_duration(signals, fs):
+    max_duration = signals[0].size
+    for signal in signals[1:]:
+        if max_duration < signal.size:
+            max_duration = signal.size
+    return max_duration/fs * 1000
 
 
 def by_shortest(signals, fs):
