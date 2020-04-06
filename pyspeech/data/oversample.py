@@ -5,6 +5,9 @@ import numpy as np
 from ..dsp import processing as sproc
 
 
+_MIN_DURATION = 100  # seconds
+
+
 def by_duration(signals, fs, duration=500):
     """Splits all signals into specified duration
 
@@ -17,14 +20,22 @@ def by_duration(signals, fs, duration=500):
         dataset (ndarray): splits of signals of the specified duration
     """
     max_duration = _find_max_duration(signals, fs)
-    if max_duration < duration:
-        raise Warning(f"Longest signal has {max_duration}ms, using this instead"
-                      f" of {duration}ms")
-    duration = min(max_duration, duration)
+    _warn_duration(duration, max_duration)
+    duration = max(min(max_duration, duration), _MIN_DURATION)
 
     samplesize = math.ceil(duration/1000 * fs) # Duration in number of samples
     splits = _split_all(signals, samplesize)
     return splits
+
+
+def _warn_duration(duration, max_duration):
+    if max_duration < duration:
+        raise Warning(f"Longest signal has {max_duration}ms, using this instead"
+                      f" of {duration}ms")
+    if duration < _MIN_DURATION:
+        raise Warning(f"Min duration is {_MIN_DURATION}ms, using this instead"
+                      f" of {duration}ms")
+
 
 
 def _find_max_duration(signals, fs):

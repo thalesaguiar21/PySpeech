@@ -21,7 +21,7 @@ class TestsOversampling(unittest.TestCase):
 
     def test_by_duration_negative(self):
         fs, signal = wavfile.read(SIGNALPATH)
-        with self.assertRaises(ValueError):
+        with self.assertRaises(Warning):
             oversample.by_duration([signal], fs, -300)
 
     def test_by_duration_bigger_than_signal(self):
