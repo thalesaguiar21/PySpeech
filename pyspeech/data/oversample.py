@@ -19,31 +19,9 @@ def by_duration(signals, fs, duration=500):
     Returns:
         dataset (ndarray): splits of signals of the specified duration
     """
-    max_duration = _find_max_duration(signals, fs)
-    _warn_duration(duration, max_duration)
-    duration = max(min(max_duration, duration), _MIN_DURATION)
-
     samplesize = math.ceil(duration/1000 * fs) # Duration in number of samples
-    splits = _split_all(signals, samplesize)
+    splits = _split_all(signals, samplesize, fs)
     return splits
-
-
-def _warn_duration(duration, max_duration):
-    if max_duration < duration:
-        raise Warning(f"Longest signal has {max_duration}ms, using this instead"
-                      f" of {duration}ms")
-    if duration < _MIN_DURATION:
-        raise Warning(f"Min duration is {_MIN_DURATION}ms, using this instead"
-                      f" of {duration}ms")
-
-
-
-def _find_max_duration(signals, fs):
-    max_duration = signals[0].size
-    for signal in signals[1:]:
-        if max_duration < signal.size:
-            max_duration = signal.size
-    return max_duration/fs * 1000
 
 
 def by_shortest(signals, fs):
@@ -66,8 +44,34 @@ def by_scalar_shortest(signals, fs, alpha=3):
     """
     shortest = _find_shortest(signals)
     samplesize = math.ceil(shortest.size / alpha)
-    splits = _split_all(signals, samplesize)
+    splits = _split_all(signals, samplesize, fs)
     return splits
+
+
+def _split_all(signals, nsamples, fs):
+    nsamples = _fix_duration(signals, nsamples, fs)
+    splits = []
+    for signal in signals:
+        sigsplits = _split(signal, nsamples)
+        splits.extend(sigsplits)
+    return np.array(splits)
+
+
+def _fix_duration(signals, nsamples, fs):
+    max_duration = _find_max_duration(signals, fs)
+    duration = math.ceil(nsamples/fs * 1000)
+    _warn_duration(duration, max_duration)
+    wraped_duration = max(min(max_duration, duration), _MIN_DURATION)
+    return math.ceil(wraped_duration/1000 * fs)
+
+
+def _warn_duration(duration, max_duration):
+    if max_duration < duration:
+        raise Warning(f"Longest signal has {max_duration}ms, using this instead"
+                      f" of {duration}ms")
+    if duration < _MIN_DURATION:
+        raise Warning(f"Min duration is {_MIN_DURATION}ms, using this instead"
+                      f" of {duration}ms")
 
 
 def _find_shortest(signals):
@@ -78,12 +82,12 @@ def _find_shortest(signals):
     return shortest
 
 
-def _split_all(signals, nsamples):
-    splits = []
-    for signal in signals:
-        sigsplits = _split(signal, nsamples)
-        splits.extend(sigsplits)
-    return np.array(splits)
+def _find_max_duration(signals, fs):
+    max_duration = signals[0].size
+    for signal in signals[1:]:
+        if max_duration < signal.size:
+            max_duration = signal.size
+    return max_duration/fs * 1000
 
 
 def _split(signal, nsamples):
