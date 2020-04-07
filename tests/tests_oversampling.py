@@ -19,6 +19,26 @@ class TestsOversampling(unittest.TestCase):
         newdata, __ = oversample.by_duration([signal], fs, [1], 500)
         self.assertEqual(newdata.shape, (66, 4000))
 
+    def test_by_duration_nlabels(self):
+        fs, signal = wavfile.read(SIGNALPATH)
+        newdata, labels = oversample.by_duration([signal], fs, [1], 500)
+        self.assertEqual(newdata.shape[0], labels.size)
+
+    def test_by_duration_labels_single(self):
+        fs, signal = wavfile.read(SIGNALPATH)
+        newdata, labels = oversample.by_duration([signal], fs, [1], 500)
+        expected_labels = [1] * newdata.shape[0]
+        isequal = np.all(expected_labels == labels)
+        self.assertTrue(isequal)
+
+    def test_by_duration_labels_mult(self):
+        durations = [12, 10, 3.5, 40]
+        fs, signals, ids = _build_signals(durations)
+        __, labels = oversample.by_duration(signals, fs, ids, 500)
+        expected_ids = [ids[0]]*24 + [ids[1]]*20 + [ids[2]]*7 + [ids[3]]*80
+        isequal = np.all(expected_ids == labels)
+        self.assertTrue(isequal)
+
     def test_by_duration_negative(self):
         fs, signal = wavfile.read(SIGNALPATH)
         with self.assertRaises(Warning):
