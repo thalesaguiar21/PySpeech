@@ -16,36 +16,37 @@ class TestsOversampling(unittest.TestCase):
 
     def test_by_duration_shape(self):
         fs, signal = wavfile.read(SIGNALPATH)
-        newdata = oversample.by_duration([signal], fs, 500)
+        newdata, __ = oversample.by_duration([signal], fs, [1], 500)
         self.assertEqual(newdata.shape, (66, 4000))
 
     def test_by_duration_negative(self):
         fs, signal = wavfile.read(SIGNALPATH)
         with self.assertRaises(Warning):
-            oversample.by_duration([signal], fs, -300)
+            oversample.by_duration([signal], fs, [1], -300)
 
     def test_by_duration_bigger_than_signal(self):
         fs, signal = wavfile.read(SIGNALPATH)
         with self.assertRaises(Warning):
-            oversample.by_duration([signal], fs, 40000)
+            oversample.by_duration([signal], fs, [1], 40000)
     
     def test_by_shortest(self):
         durations = [12, 10, 3.5, 40]
-        fs, signals = _build_signals(durations)
-        newdata = oversample.by_shortest(signals, fs)
+        fs, signals, ids = _build_signals(durations)
+        newdata, __ = oversample.by_shortest(signals, fs, ids)
         self.assertEqual(newdata.shape, (20, durations[2]*fs))
 
     def test_by_scalar_shortest(self):
         durations = [12, 10, 3.5, 40]
-        fs, signals = _build_signals(durations)
-        newdata = oversample.by_scalar_shortest(signals, fs, 2)
+        fs, signals, ids = _build_signals(durations)
+        newdata, __ = oversample.by_scalar_shortest(signals, fs, ids, 2)
         self.assertEqual(newdata.shape, (38, durations[2]/2 * fs))
 
 
 def _build_signals(durations):
     fs = 8000
     amp = 300
+    ids = [0, 1, 0, 1]
     signal_sizes = [math.ceil(fs*sec) for sec in durations]
     signals = [amp * np.random.rand(size) for size in signal_sizes]
-    return fs, signals
+    return fs, signals, ids
 

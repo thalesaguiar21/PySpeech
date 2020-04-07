@@ -8,35 +8,37 @@ from ..dsp import processing as sproc
 _MIN_DURATION = 100  # seconds
 
 
-def by_duration(signals, fs, duration=500):
+def by_duration(signals, fs, ids, duration=500):
     """Splits all signals into specified duration
 
     Args:
         signals (list): the signal to be split
         fs (float): the sampling rate
+        ids (ndarray): the ids from each signal
         duration (int): the duration in ms, defaults to 500
 
     Returns:
         dataset (ndarray): splits of signals of the specified duration
     """
     samplesize = math.ceil(duration/1000 * fs) # Duration in number of samples
-    splits = _split_all(signals, samplesize, fs)
+    splits = _split_all(signals, fs, ids, samplesize)
     return splits
 
 
-def by_shortest(signals, fs):
+def by_shortest(signals, fs, ids):
     """Splits all signals by the duration of the shortest signal.
     It calls 'by_scalar_shortest'"""
-    splits = by_scalar_shortest(signals, fs, 1)
+    splits = by_scalar_shortest(signals, fs, ids, 1)
     return splits
 
 
-def by_scalar_shortest(signals, fs, alpha=3):
+def by_scalar_shortest(signals, fs, ids, alpha=3):
     """Splits all signals by a divisor of the shortest signal
 
     Args:
         signals (list): the signals to be split
         fs (float): the sampling rate
+        ids (ndarray): the ids from each signal
         alpha (int): the shortest signal divisor
 
     Returns:
@@ -44,17 +46,19 @@ def by_scalar_shortest(signals, fs, alpha=3):
     """
     shortest = _find_shortest(signals)
     samplesize = math.ceil(shortest.size / alpha)
-    splits = _split_all(signals, samplesize, fs)
+    splits = _split_all(signals, fs, ids, samplesize)
     return splits
 
 
-def _split_all(signals, nsamples, fs):
+def _split_all(signals, fs, ids, nsamples):
     nsamples = _fix_duration(signals, nsamples, fs)
     splits = []
-    for signal in signals:
+    expanded_ids = []
+    for signal, id_ in zip(signals, ids):
         sigsplits = _split(signal, nsamples)
         splits.extend(sigsplits)
-    return np.array(splits)
+        expanded_ids.extend([id_] * sigsplits.shape[0])
+    return np.array(splits), np.array(expanded_ids)
 
 
 def _fix_duration(signals, nsamples, fs):
