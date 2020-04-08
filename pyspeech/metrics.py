@@ -51,3 +51,14 @@ def str_to_list(name):
         return list(name)
     return name
 
+
+def dtw(s, t):
+    dists = np.full((s.size, t.size), np.inf)
+    dists[0, 0] = 0
+    for i in range(1, s.size):
+        for j in range(1, t.size):
+            cost = ((s[i] - t[i])**2)**0.5
+            extra = min(dists[i-1, j], dists[i, j-1], dists[i-1, j-1])
+            dists[i, j] = cost + extra
+    return dists[-1, -1]
+
