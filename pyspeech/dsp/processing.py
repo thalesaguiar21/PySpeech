@@ -38,10 +38,7 @@ def split_with_stride(signal):
     """
     flen = frame_len(signal.samplerate)
     fstride= frame_step(signal.samplerate)
-    if flen > signal.size:
-        nframes = 1
-    else:
-        nframes = 1 + int(math.ceil((signal.size - flen) / fstride))
+    nframes = 1 + math.ceil((signal.size - flen) / fstride)
     padding = (nframes-1)*fstride + flen - signal.size
     padded_amps = np.append(signal.amps, np.zeros((padding)))
     base_idx = np.tile(np.arange(0, flen), (nframes, 1))
