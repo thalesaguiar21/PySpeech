@@ -25,8 +25,8 @@ def striding(signal):
          ...
          [22998, 22999]]
     """
-    flen = _flength(signal)
-    fstride = _stride(signal)
+    flen = flength(signal)
+    fstride = stride(signal)
     nframes = 1 + math.ceil((signal.size-flen) / fstride)
     padlen = flen + (nframes*fstride) - signal.size
     paded_amps = np.append(signal.amps, np.zeros(padlen))
@@ -36,11 +36,11 @@ def striding(signal):
     return paded_amps[mask]
 
 
-def _flength(signal):
+def flength(signal):
     return _ms_to_samples(signal, confs['frame_size'])
 
 
-def _stride(signal):
+def stride(signal):
     return _ms_to_samples(signal, confs['frame_stride'])
 
 
