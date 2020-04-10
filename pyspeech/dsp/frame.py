@@ -1,36 +1,32 @@
 import os
 
 import math
+import numpy as np
 
 from ..configs import confs
 
 
-# Frames length and stride in miliseconds
-_FLEN = confs['frame_size']
-_FSTRIDE = confs['frame_stride']
-
-
 def striding(signal):
-    flen = _flenght(signal)
+    flen = _flength(signal)
     fstride = _stride(signal)
     nframes = 1 + math.ceil((signal.size-flen) / fstride)
-    pdlen = flen + (nframes*fstride) - signal.size
+    padlen = flen + (nframes*fstride) - signal.size
     paded_amps = np.append(signal.amps, np.zeros(padlen))
-    indexes = np.tile(np.arange(flen), nframes)
-    striding = np.arange(0, nframes*fstride, fstride)
+    indexes = np.tile(np.arange(flen), (nframes, 1))
+    striding = np.arange(0, nframes*fstride, fstride).reshape(nframes, 1)
     mask = indexes + striding
-    return signal.amps[mask]
+    return paded_amps[mask]
 
 
 def _flength(signal):
-    flen = _ms_to_frames(signal, _FLEN)
+    return _ms_to_samples(signal, confs['frame_size'])
 
 
 def _stride(signal):
-    return _ms_to_frames(signal, _FSTRIDE)
+    return _ms_to_samples(signal, confs['frame_stride'])
 
 
 def _ms_to_samples(signal, ms):
-    nsamples = ms/1000 * signal.fs
-    return math.floor(nsamples)
+    nsamples = round(ms/1000 * signal.fs)
+    return int(nsamples)
 
