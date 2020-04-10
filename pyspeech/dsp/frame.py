@@ -7,6 +7,24 @@ from ..configs import confs
 
 
 def striding(signal):
+    """ Splits signals into frames
+
+    Args:
+        signals (list:Signal): The signals to be split
+        frame (Frame): The frame size and stride
+
+    Returns:
+        frames (ndarray): The frammed signal
+
+    Example:
+        >>> sig = Signal(np.arange(24000), 80)
+        >>> frame = Frame(25, 10)
+        >>> split_with_stride(signal, frame)
+        [[1, 2],
+         [2, 3],
+         ...
+         [22998, 22999]]
+    """
     flen = _flength(signal)
     fstride = _stride(signal)
     nframes = 1 + math.ceil((signal.size-flen) / fstride)

@@ -1,20 +1,17 @@
 import numpy as np
 
 from . import processing as proc
+from . import frame
 
 
 def remove(signal, threshold):
     """ Removes silence from signal based on maximum aplitude
 
-    Args:
-        signal (list:Signal): The signals to remove silence
-        frame (Frame): The frame size and stride
-
     Returns:
         The signal with amplitudes > threshold
     """
-    or_frames = proc.split(signal)
-    norm_frames = proc.split(proc.normalise(signal))
+    or_frames = frame.striding(signal)
+    norm_frames = frame.striding(proc.normalise(signal))
     voiced_indexes, __ = _detect_silence(norm_frames, threshold)
     voiced_frames = or_frames[voiced_indexes]
     voiced_amps = np.reshape(voiced_frames, voiced_frames.size)
