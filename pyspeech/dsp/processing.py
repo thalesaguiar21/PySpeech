@@ -15,7 +15,7 @@ class Signal:
     Atributes:
         amps (ndarray): The amplitudes
         size (ndarray): The signal length
-        samplerate (int): The sampling rate on Hz
+        fs (int): The sampling rate on Hz
     """
     def __init__(self, amps, freq):
         self.amps = amps
@@ -50,8 +50,8 @@ def split_with_stride(signal):
          ...
          [22998, 22999]]
     """
-    flen = frame_len(signal.samplerate)
-    fstride= frame_step(signal.samplerate)
+    flen = frame_len(signal.fs)
+    fstride= frame_step(signal.fs)
     nframes = 1 + math.ceil((signal.size - flen) / fstride)
     padding = (nframes-1)*fstride + flen - signal.size
     padded_amps = np.append(signal.amps, np.zeros((padding)))
@@ -63,7 +63,7 @@ def split_with_stride(signal):
 
 
 def split(signal):
-    flen = frame_len(signal.samplerate)
+    flen = frame_len(signal.fs)
     nframes = math.ceil(signal.size / flen)
     padlen = nframes*flen - signal.size
 
@@ -74,7 +74,7 @@ def split(signal):
 
 def emphasize(signal, gain):
     emph_amps = np.append(signal.amps[0], signal.amps[1:] - gain*signal.amps[:-1])
-    return Signal(emph_amps, signal.samplerate)
+    return Signal(emph_amps, signal.fs)
 
 
 def normalise(signal):
@@ -83,7 +83,7 @@ def normalise(signal):
         normalised_amps = signal.amps
     else:
         normalised_amps = signal.amps / max_amp
-    return Signal(normalised_amps, signal.samplerate)
+    return Signal(normalised_amps, signal.fs)
 
 
 def find_best_nfft(freq, flen=None):

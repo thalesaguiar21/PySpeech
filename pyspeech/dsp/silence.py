@@ -18,7 +18,7 @@ def remove(signal, threshold):
     voiced_indexes, __ = _detect_silence(norm_frames, threshold)
     voiced_frames = or_frames[voiced_indexes]
     voiced_amps = np.reshape(voiced_frames, voiced_frames.size)
-    return proc.Signal(voiced_amps, signal.samplerate)
+    return proc.Signal(voiced_amps, signal.fs)
 
 
 def _detect_silence(frames, threshold):

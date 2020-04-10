@@ -24,7 +24,7 @@ def extract(signal, mfcc, melfilter, emph):
         The log-energy + MFCC or MFCC
     """
     powspec = _make_power_spectrum(signal, emph)
-    srate = signal.samplerate
+    srate = signal.fs
     if confs['append_energy']:
         feats = _extract_mfcc_and_energy(powspec, mfcc, melfilter, srate)
     else:

@@ -56,28 +56,3 @@ class TestsNormalise(unittest.TestCase):
         right_list = right.tolist()
         self.assertListEqual(left_list, right_list)
 
-class TestsSplit(unittest.TestCase):
-
-    def test_split_19_frames_dim_4(self):
-        confs['frame_size'] = 200  # ms
-        confs['frame_stride'] = 100  # ms
-        signal = sp.Signal(np.arange(-20, 20), 20)
-        frames = sp.split_with_stride(signal)
-        self.assertEqual(19, frames.shape[0])
-
-    def test_padding_0(self):
-        confs['frame_size'] = 200  # ms
-        confs['frame_stride'] = 100  # ms
-        signal = sp.Signal(np.arange(-20, 20), 20)
-        frames = sp.split_with_stride(signal)
-        self.assertEqual(76, frames.size)
-
-    def test_padding_2_zeros(self):
-        confs['frame_size'] = 300  # ms
-        confs['frame_stride'] = 150  # ms
-        signal = sp.Signal(np.arange(-20, 20), 20)
-        frames = sp.split_with_stride(signal)
-        self.assertEqual(78, frames.size)
-        self.assertEqual(0, frames[-1, -1])
-        self.assertEqual(0, frames[-1, -2])
-
