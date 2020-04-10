@@ -1,3 +1,4 @@
+import matplotlib.pyplot as plt
 import os
 import unittest
 import math
@@ -38,6 +39,12 @@ class TestsTrasnform(unittest.TestCase):
     def test_logenergy(self):
         signal = read_signal()
         lenergies = transform.log_energy(signal)
+
+    def test_zrate(self):
+        signal = read_signal()
+        rates = transform.zr_rate(signal)
+        allpositive = all(rate >= 0 for rate in rates)
+        self.assertTrue(allpositive)
 
 
 def read_signal():
