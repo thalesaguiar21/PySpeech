@@ -25,6 +25,7 @@ def magnitude(signal):
     spectrum = np.fft.rfft(wnd_frames, confs['nfft'])
     return np.absolute(spectrum)
 
+
 def make_frame(signal):
     if len(signal.shape) == 2:
         return signal
