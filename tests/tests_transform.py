@@ -42,7 +42,7 @@ class TestsTrasnform(unittest.TestCase):
 
     def test_zrate(self):
         signal = read_signal()
-        rates = transform.zr_rate(signal)
+        rates = transform.zcr(signal)
         allpositive = all(rate >= 0 for rate in rates)
         self.assertTrue(allpositive)
 

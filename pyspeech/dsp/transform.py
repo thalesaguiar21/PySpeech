@@ -4,7 +4,7 @@ import numpy as np
 from . import frame
 
 
-def zr_rate(signal):
+def zcr(signal):
     rates = []
     flen = frame.flength(signal)
     for fr in frame.striding(signal):
