@@ -1,4 +1,5 @@
 test:
+	clear
 	python -m unittest -v $(module)
 
 # Delete every __pycache__ directory in this project
