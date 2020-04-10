@@ -14,6 +14,8 @@ class TestsMFCC(unittest.TestCase):
         self.emph = 0.97
         self.signnal = sp.Signal([], 0)
         confs['append_energy'] = True
+        confs['frame_size'] = 25
+        confs['frame_stride'] = 10
 
     def test_signal_200l_20hz(self):
         self.make_signal(32000, 8000)

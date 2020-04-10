@@ -3,6 +3,7 @@ from dataclasses import dataclass
 import numpy as np
 import scipy.fftpack as scifft
 
+import pyspeech.dsp.frame as frame
 import pyspeech.dsp.processing as sp
 import pyspeech.dsp.spectrum as spec
 import pyspeech.dsp.metrics as smet
@@ -53,7 +54,7 @@ def _make_power_spectrum(signal, emph):
 
 def _make_frames_and_window(signal, emph):
     emph_signal = sp.emphasize(signal, emph)
-    frames = sp.split_with_stride(signal)
+    frames = frame.striding(signal)
     ham_frames = frames * np.hamming(sp.frame_len(confs['frame_size']))
     return ham_frames
 
