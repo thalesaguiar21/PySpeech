@@ -3,15 +3,7 @@ import numpy as np
 from . import processing as proc
 
 
-def remove(signal):
-    pass
-
-
-def detect(signal):
-    pass
-
-
-def remove_silence(signal, threshold):
+def remove(signal, threshold):
     """ Removes silence from signal based on maximum aplitude
 
     Args:

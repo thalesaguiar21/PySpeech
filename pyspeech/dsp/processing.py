@@ -9,6 +9,20 @@ import numpy as np
 from pyspeech.configs import confs
 
 
+class Signal:
+    """ A simple class to represent a digital signal
+
+    Atributes:
+        amps (ndarray): The amplitudes
+        size (ndarray): The signal length
+        samplerate (int): The sampling rate on Hz
+    """
+    def __init__(self, amps, freq):
+        self.amps = amps
+        self.size = len(amps)
+        self.fs = freq
+
+
 def frame_len(freq):
     return int(round(confs['frame_size']/1000. * freq))
 
@@ -70,20 +84,6 @@ def normalise(signal):
     else:
         normalised_amps = signal.amps / max_amp
     return Signal(normalised_amps, signal.samplerate)
-
-
-class Signal:
-    """ A simple class to represent a digital signal
-
-    Atributes:
-        amps (ndarray): The amplitudes
-        size (ndarray): The signal length
-        samplerate (int): The sampling rate on Hz
-    """
-    def __init__(self, amps, freq):
-        self.amps = amps
-        self.size = len(amps)
-        self.samplerate= freq
 
 
 def find_best_nfft(freq, flen=None):
