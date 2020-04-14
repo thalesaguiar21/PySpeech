@@ -6,15 +6,17 @@ import numpy as np
 from ..configs import confs
 
 
-def striding(signal):
+def striding(signal, flen=None, fstride=None):
     """ Splits signals into frames
 
     Args:
-        signals (list:Signal): The signals to be split
-        frame (Frame): The frame size and stride
+        flen (int, optional): the frame length in ms, if None the 'frame_size'
+            configuration will be used.
+        fstride (int, optional): the frame striding in ms, if None the
+            'frame_stride' configuration will be used.
 
     Returns:
-        frames (ndarray): The frammed signal
+        The framed signal (ndarray)
 
     Example:
         >>> sig = Signal(np.arange(24000), 80)
@@ -25,8 +27,8 @@ def striding(signal):
          ...
          [22998, 22999]]
     """
-    flen = flength(signal)
-    fstride = stride(signal)
+    flen = flength(signal, flen)
+    fstride = stride(signal, fstride)
     nframes = 1 + math.ceil((signal.size-flen) / fstride)
     padlen = flen + (nframes*fstride) - signal.size
     paded_amps = np.append(signal.amps, np.zeros(padlen))
@@ -36,15 +38,19 @@ def striding(signal):
     return paded_amps[mask]
 
 
-def flength(signal):
-    return _ms_to_samples(signal, confs['frame_size'])
+def flength(freq, flen=None):
+    if fsize is None:
+        fsize = confs['frame_size']
+    return _ms_to_samples(freq, fsize)
 
 
-def stride(signal):
-    return _ms_to_samples(signal, confs['frame_stride'])
+def stride(freq, fstride=None):
+    if fstride is None:
+        fstride = confs['frame_stride']
+    return _ms_to_samples(freq, fstride)
 
 
-def _ms_to_samples(signal, ms):
-    nsamples = round(ms/1000 * signal.fs)
+def _ms_to_samples(freq, ms):
+    nsamples = round(ms/1000 * freq)
     return int(nsamples)
 
