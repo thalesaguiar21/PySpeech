@@ -27,8 +27,8 @@ def striding(signal, flen=None, fstride=None):
          ...
          [22998, 22999]]
     """
-    flen = flength(signal, flen)
-    fstride = stride(signal, fstride)
+    flen = flength(signal.fs, flen)
+    fstride = stride(signal.fs, fstride)
     nframes = 1 + math.ceil((signal.size-flen) / fstride)
     padlen = flen + (nframes*fstride) - signal.size
     paded_amps = np.append(signal.amps, np.zeros(padlen))
@@ -50,7 +50,7 @@ def stride(freq, fstride=None):
     return _ms_to_samples(freq, fstride)
 
 
-def _ms_to_samples(freq, ms):
+def ms_to_samples(freq, ms):
     nsamples = round(ms/1000 * freq)
     return int(nsamples)
 
