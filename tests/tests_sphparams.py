@@ -26,9 +26,9 @@ class TestsSphparams(unittest.TestCase):
         signal = read_signal()
         frames = get_frames(signal)
         energies = sphparams.st_energy(frames)
-        flen = frame.flength(signal.fs)
+        flength = frame.size(signal.fs)
         stride = frame.stride(signal.fs)
-        nframes = 1 + math.ceil((signal.size-flen) / stride)
+        nframes = 1 + math.ceil((signal.size-flength) / stride)
         self.assertEqual(len(energies), nframes)
 
     def test_negative_energy(self):
@@ -56,5 +56,5 @@ def read_signal():
 
 def get_frames(signal=None):
     signal = read_signal() if signal is None else signal
-    return frame.striding(signal)
+    return frame.apply(signal)
 

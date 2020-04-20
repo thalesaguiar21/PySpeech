@@ -54,7 +54,7 @@ def _make_power_spectrum(signal, emph):
 
 def _make_frames_and_window(signal, emph):
     emph_signal = sp.emphasize(signal, emph)
-    frames = frame.striding(signal)
+    frames = frame.apply(signal)
     ham_frames = frames * np.hamming(frames.shape[1])
     return ham_frames
 
