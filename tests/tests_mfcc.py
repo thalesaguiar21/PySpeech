@@ -4,7 +4,7 @@ import numpy as np
 from .context import pyspeech
 import pyspeech.dsp.processing as sp
 import pyspeech.features.mfcc as mfcc
-from pyspeech.configs import confs
+from pyspeech import conf
 
 class TestsMFCC(unittest.TestCase):
 
@@ -13,9 +13,9 @@ class TestsMFCC(unittest.TestCase):
         self.mfilter = mfcc.MelFilter(40, 4000, 300)
         self.emph = 0.97
         self.signnal = sp.Signal([], 0)
-        confs['append_energy'] = True
-        confs['frame_size'] = 25
-        confs['frame_stride'] = 10
+        conf.append_energy = True
+        conf.framing['size'] = 25
+        conf.framing['stride'] = 10
 
     def test_signal_200l_20hz(self):
         self.make_signal(32000, 8000)
@@ -28,7 +28,7 @@ class TestsMFCC(unittest.TestCase):
 
     def test_no_energy_append(self):
         self.make_signal(32000, 8000)
-        confs['append_energy'] = False
+        conf.append_energy = False
         mfccs = self.extract()
         self.assertEqual(mfccs.shape[1], self.mfcc.ncep)
 

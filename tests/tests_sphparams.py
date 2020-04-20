@@ -7,8 +7,8 @@ import numpy as np
 from scipy.io import wavfile
 
 from .context import pyspeech
+from pyspeech.conf import framing
 from pyspeech.dsp import sphparams
-from pyspeech.configs import confs
 from pyspeech.dsp.processing import Signal
 from pyspeech.dsp import frame
 
@@ -19,8 +19,8 @@ SIGNALPATH = os.path.abspath('tests/voice/OSR_us_000_0011_8k.wav')
 class TestsSphparams(unittest.TestCase):
 
     def setUp(self):
-        confs['frame_size'] = 25
-        confs['frame_stride'] = 10
+        framing['size'] = 25
+        framing['stride'] = 10
 
     def test_st_energy(self):
         signal = read_signal()

@@ -5,7 +5,6 @@ import numpy as np
 
 from .context import pyspeech
 import pyspeech.dsp.processing as sp
-from pyspeech.configs import confs
 
 
 class TestsMinNFFT(unittest.TestCase):

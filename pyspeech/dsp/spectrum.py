@@ -1,6 +1,6 @@
 import numpy as np
 
-from pyspeech.configs import confs
+from pyspeech import conf
 import pyspeech.dsp.processing as sp
 
 
@@ -17,10 +17,10 @@ def log_power(signal, frame, nfft):
 
 def power(signal):
     mag_spec = magnitude(signal)
-    return 1.0/confs['nfft'] * mag_spec**2
+    return 1.0/conf.nfft * mag_spec**2
 
 
 def magnitude(wnd_frames):
-    spectrum = np.fft.rfft(wnd_frames, confs['nfft'])
+    spectrum = np.fft.rfft(wnd_frames, conf.nfft)
     return np.absolute(spectrum)
 

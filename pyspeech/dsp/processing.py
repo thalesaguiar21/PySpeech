@@ -6,7 +6,7 @@ import math
 import numpy as np
 
 
-from pyspeech.configs import confs
+from ..conf import framing
 
 
 class Signal:
@@ -38,7 +38,7 @@ def normalise(signal):
 
 
 def find_best_nfft(freq, flen=None):
-    flen = frame_len(confs['frame_size'], freq) if flen is None else flen
+    flen = frame_len(framing['size'], freq) if flen is None else flen
     if freq > 0 and flen > 0:
         nfft = 1
         while nfft < freq * flen:

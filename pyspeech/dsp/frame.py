@@ -3,7 +3,7 @@ import os
 import math
 import numpy as np
 
-from ..configs import confs
+from ..conf import framing
 
 
 def apply(signal, size_=None, stride_=None):
@@ -40,13 +40,13 @@ def apply(signal, size_=None, stride_=None):
 
 def size(freq, flen=None):
     if flen is None:
-        flen = confs['frame_size']
+        flen = framing['size']
     return _ms_to_samples(freq, flen)
 
 
 def stride(freq, size=None):
     if size is None:
-        size = confs['frame_stride']
+        size = framing['stride']
     return _ms_to_samples(freq, size)
 
 

@@ -3,7 +3,6 @@ import numpy as np
 from . import processing as proc
 from . import frame
 from . import sphparams
-from ..configs import confs
 
 
 _IF = 35

@@ -3,19 +3,19 @@ from dataclasses import dataclass
 import numpy as np
 import scipy.fftpack as scifft
 
+from pyspeech import conf
 import pyspeech.dsp.frame as frame
 import pyspeech.dsp.processing as sp
 import pyspeech.dsp.spectrum as spec
 import pyspeech.dsp.metrics as smet
 import pyspeech.features.derivs as sder
-from pyspeech.configs import confs
 
 
 def extract(signal, mfcc, melfilter, emph):
     """ Extract the Mel-Frequency Cepstrum Coefficients from a signal
 
     Note:
-        If confs['append_energy'] is True, this function will append the log
+        If conf.append_energy is True, this function will append the log
         energy of each frame
 
     Args:
@@ -26,7 +26,7 @@ def extract(signal, mfcc, melfilter, emph):
     """
     powspec = _make_power_spectrum(signal, emph)
     srate = signal.fs
-    if confs['append_energy']:
+    if conf.append_energy:
         feats = _extract_mfcc_and_energy(powspec, mfcc, melfilter, srate)
     else:
         feats = _extract_mfcc(powspec, mfcc, melfilter, srate)
@@ -77,12 +77,12 @@ def _make_bins(melfilter, srate):
     highmel = smet.hz_to_mel(melfilter.highfreq)
     lowmel = smet.hz_to_mel(melfilter.lowfreq)
     mel_points = np.linspace(lowmel, highmel, melfilter.nfilt + 2)
-    bins = np.floor((confs['nfft'] + 1)*smet.mel_to_hz(mel_points) / srate)
+    bins = np.floor((conf.nfft + 1)*smet.mel_to_hz(mel_points) / srate)
     return bins
 
 
 def _make_fbanks(melfilter, bins):
-    fbanks = np.zeros((melfilter.nfilt, confs['nfft']//2 + 1 ))
+    fbanks = np.zeros((melfilter.nfilt, conf.nfft//2 + 1 ))
     for j in range(melfilter.nfilt):
         for i in range(int(bins[j]), int(bins[j + 1])):
             fbanks[j, i] = (i-bins[j]) / (bins[j + 1]-bins[j])
