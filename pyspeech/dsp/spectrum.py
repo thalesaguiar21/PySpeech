@@ -20,15 +20,7 @@ def power(signal):
     return 1.0/confs['nfft'] * mag_spec**2
 
 
-def magnitude(signal):
-    wnd_frames = make_frame(signal)
+def magnitude(wnd_frames):
     spectrum = np.fft.rfft(wnd_frames, confs['nfft'])
     return np.absolute(spectrum)
-
-
-def make_frame(signal):
-    if len(signal.shape) == 2:
-        return signal
-    else:
-        return sp.split_with_stride(signal)
 
