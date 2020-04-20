@@ -44,7 +44,7 @@ def discriminate(signal, normlen=10):
 def _get_words(frames, normlen):
     energies = log_energy(frames)
     norm_egys = energies - max(energies)
-    itr = get_itr(energies[:normlen])
+    itr = _get_itr(energies[:normlen])
     beginwords = _find_energy_peaks(energies, itr)
     rev_ends = _find_energy_peaks(energies.reverse(), itr)
     nframes = frames.shape[0]
@@ -52,7 +52,7 @@ def _get_words(frames, normlen):
     return beginwords, endwords
 
 
-def get_itr(energies):
+def _get_itr(energies):
     egyavg, egystd = np.mean(energies), np.std(energies)
     return max(_ITU, egyavg + 3*egystd)
 
@@ -71,7 +71,7 @@ def _find_energy_peaks(energies, itr):
 
 def _adjust_words(frames, normlen, begins, ends):
     zcrs = sphparams.zcr(frames)
-    izct = get_izct(zcrs[:normlen])
+    izct = _get_izct(zcrs[:normlen])
     newbegins = _adjust(zcrs, begins, izct)
     newends = _adjust(zcrs.reverse(), ends, izct)
     return newends
@@ -96,7 +96,7 @@ def _adjust(words, zcrs, izct):
     return adjusted_words
 
 
-def get_izct(zcrs):
+def _get_izct(zcrs):
     zcavg, zcstd = np.mean(zcrs), np.std(zcrs)
     return max(_IF, zcavg + 3*zcstd)
 
