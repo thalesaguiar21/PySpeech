@@ -39,15 +39,15 @@ def striding(signal, flen=None, fstride=None):
 
 
 def flength(freq, flen=None):
-    if fsize is None:
-        fsize = confs['frame_size']
-    return _ms_to_samples(freq, fsize)
+    if flen is None:
+        flen = confs['frame_size']
+    return ms_to_samples(freq, flen)
 
 
 def stride(freq, fstride=None):
     if fstride is None:
         fstride = confs['frame_stride']
-    return _ms_to_samples(freq, fstride)
+    return ms_to_samples(freq, fstride)
 
 
 def ms_to_samples(freq, ms):
