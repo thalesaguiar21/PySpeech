@@ -7,7 +7,7 @@ import numpy as np
 from scipy.io import wavfile
 
 from .context import pyspeech
-from pyspeech.dsp import transform
+from pyspeech.dsp import sphparams
 from pyspeech.configs import confs
 from pyspeech.dsp.processing import Signal
 from pyspeech.dsp import frame
@@ -16,7 +16,7 @@ from pyspeech.dsp import frame
 SIGNALPATH = os.path.abspath('tests/voice/OSR_us_000_0011_8k.wav')
 
 
-class TestsTrasnform(unittest.TestCase):
+class TestsSphparams(unittest.TestCase):
 
     def setUp(self):
         confs['frame_size'] = 25
@@ -24,25 +24,27 @@ class TestsTrasnform(unittest.TestCase):
 
     def test_st_energy(self):
         signal = read_signal()
-        energies = list(transform.short_time_energy(signal))
-        flen = frame.flength(signal)
-        stride = frame.stride(signal)
+        frames = get_frames(signal)
+        energies = sphparams.st_energy(frames)
+        flen = frame.flength(signal.fs)
+        stride = frame.stride(signal.fs)
         nframes = 1 + math.ceil((signal.size-flen) / stride)
         self.assertEqual(len(energies), nframes)
 
     def test_negative_energy(self):
-        signal = read_signal()
-        energies = list(transform.short_time_energy(signal))
+        signal = get_frames()
+        energies = list(sphparams.st_energy(signal))
         allpositive = all(egy > 0 for egy in energies)
         self.assertTrue(allpositive)
 
     def test_logenergy(self):
-        signal = read_signal()
-        lenergies = transform.log_energy(signal)
+        signal = get_frames()
+        lenergies = sphparams.log_energy(signal)
 
     def test_zrate(self):
         signal = read_signal()
-        rates = transform.zcr(signal)
+        frames = get_frames(signal)
+        rates = sphparams.zcr(frames, signal.fs)
         allpositive = all(rate >= 0 for rate in rates)
         self.assertTrue(allpositive)
 
@@ -50,4 +52,9 @@ class TestsTrasnform(unittest.TestCase):
 def read_signal():
     fs, amps = wavfile.read(SIGNALPATH)
     return Signal(amps, fs)
+
+
+def get_frames(signal=None):
+    signal = read_signal() if signal is None else signal
+    return frame.striding(signal)
 

@@ -1,5 +1,7 @@
 import numpy as np
 
+from . import frame
+
 
 def log_energy(frames):
     energy = list(st_energy(frames))
@@ -16,7 +18,9 @@ def st_energy(frames):
 def zcr(frames, fs):
     fixedframes = _fix_frames(frames)
     nframes = fixedframes.shape[0]
-    difs = sgns - np.append(sgns[:, 1:], np.zeros(nframes, 1))
+    zeros = np.zeros((nframes, 1))
+    sgns = np.apply_along_axis(sgn, 0, fixedframes)
+    difs = sgns - np.hstack((sgns[:, 1:], zeros))
     absdifs = np.abs(difs)
     norm = frame.stride(fs) / 2*fixedframes[0].size
     zcrs = norm * np.sum(absdifs, axis=1)
@@ -32,9 +36,12 @@ def _fix_frames(frames):
         raise ValueError("Can use only 1 and 2 dimensional arrays!")
 
 
-def sgn(x):
-    if x >= 0:
-        return 1
-    else:
-        return -1
+def sgn(arr):
+    sgns = []
+    for x in arr:
+        if x>= 0:
+            sgns.append(1)
+        else:
+            sgns.append(-1)
+    return sgns
 
