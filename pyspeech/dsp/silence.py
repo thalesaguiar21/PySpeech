@@ -17,8 +17,8 @@ def remove(signal, threshold):
     Returns:
         The signal with amplitudes > threshold
     """
-    or_frames = frame.striding(signal)
-    norm_frames = frame.striding(proc.normalise(signal))
+    or_frames = frame.apply(signal)
+    norm_frames = frame.apply(proc.normalise(signal))
     voiced_indexes, __ = _detect_silence(norm_frames, threshold)
     voiced_frames = or_frames[voiced_indexes]
     voiced_amps = np.reshape(voiced_frames, voiced_frames.size)
