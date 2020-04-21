@@ -35,18 +35,18 @@ def discriminate(signal, normlen=10):
         begins, ends : two lists with the indexes where the voice begins and
             ends, respectively
     """
-    frames = frame.striding(signal)
+    frames = frame.apply(signal)
     ibegins, iends = _get_words(frames, normlen)
-    begins, ends = _adjust_words(frames, normlen, ibegins, iends)
+    begins, ends = _adjust_words(frames, normlen, ibegins, iends, signal.fs)
     return begins, ends 
 
 
 def _get_words(frames, normlen):
-    energies = log_energy(frames)
-    norm_egys = energies - max(energies)
+    energies = sphparams.log_energy(frames)
+    norm_egys = energies - max(energies)  # Normalise to 0dB
     itr = _get_itr(energies[:normlen])
     beginwords = _find_energy_peaks(energies, itr)
-    rev_ends = _find_energy_peaks(energies.reverse(), itr)
+    rev_ends = _find_energy_peaks(np.flip(energies), itr)
     nframes = frames.shape[0]
     endwords = [nframes - rev for rev in rev_ends]
     return beginwords, endwords
@@ -61,7 +61,7 @@ def _find_energy_peaks(energies, itr):
     peaks = []
     for i, egy in enumerate(energies):
         if egy > itr:
-            for negy in energies[i+_ADJ_FRM:i]:
+            for negy in energies[i+ADJ_FRM:i]:
                 if negy < itr:
                     break
             else:
@@ -69,12 +69,12 @@ def _find_energy_peaks(energies, itr):
     return peaks
 
 
-def _adjust_words(frames, normlen, begins, ends):
-    zcrs = sphparams.zcr(frames)
+def _adjust_words(frames, normlen, begins, ends, fs):
+    zcrs = sphparams.zcr(frames, fs)
     izct = _get_izct(zcrs[:normlen])
-    newbegins = _adjust(zcrs, begins, izct)
-    newends = _adjust(zcrs.reverse(), ends, izct)
-    return newends
+    newbegins = _adjust(begins, zcrs, izct)
+    newends = _adjust(ends, np.flip(zcrs), izct)
+    return newbegins, newends
 
 
 def _adjust(words, zcrs, izct):
@@ -82,7 +82,7 @@ def _adjust(words, zcrs, izct):
     for lblidx in words:
         low = np.inf
         highs = 0
-        start = lblidx - _ADJ_FRM
+        start = lblidx - ADJ_FRM
         for j, zcr in enumerate(zcrs[start:lblidx]):
             if zcr > izct:
                 highs += 1
@@ -92,7 +92,7 @@ def _adjust(words, zcrs, izct):
         if highs > 4:
             adjusted_words.append(low)
         else:
-            adjusted_wods.append(lblidx)
+            adjusted_words.append(lblidx)
     return adjusted_words
 
 
