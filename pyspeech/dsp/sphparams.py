@@ -18,12 +18,12 @@ def st_energy(frames):
 
 def zcr(frames, fs):
     fixedframes = _fix_frames(frames)
-    nframes = fixedframes.shape[0]
-    zeros = np.zeros((nframes, 1))
+    nframes, flen = fixedframes.shape
     sgns = np.apply_along_axis(sgn, 0, fixedframes)
-    difs = sgns - np.hstack((sgns[:, 1:], zeros))
+    lastcol = np.reshape(sgns[:, -1], (nframes, 1))
+    difs = np.hstack((sgns[:, 1:], lastcol)) - sgns
     absdifs = np.abs(difs)
-    norm = frame.stride(fs) / 2*fixedframes[0].size
+    norm = frame.stride(fs) / 2*flen
     zcrs = norm * np.sum(absdifs, axis=1)
     return zcrs
 
