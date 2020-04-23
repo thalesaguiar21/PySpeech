@@ -42,8 +42,7 @@ class TestsShorttime(unittest.TestCase):
         lenergies = shorttime.log_energy(signal)
 
     def test_logenergy_zero(self):
-        framing['size'] = 500  # ms
-        framing['stride'] = 100 # ms
+        _configure_frame()
         amps = [0] * 10
         frames = frame.apply(Signal(amps, 5))
         lenergies = shorttime.log_energy(frames)
@@ -58,8 +57,7 @@ class TestsShorttime(unittest.TestCase):
         self.assertTrue(allpositive)
 
     def test_zcr_ncross(self):
-        framing['size'] = 500  # ms
-        framing['stride'] = 100 # ms
+        _configure_frame()
         amps = np.array([3, 3, 3, -3, -4, -5, 10, 15, 12, -1])
         fs = 5
         frames = frame.apply(Signal(amps, fs))
@@ -78,13 +76,17 @@ class TestsShorttime(unittest.TestCase):
         self.assertEqual(notnull, positive)
 
     def zcr_nocrossing(self, amp):
-        framing['size'] = 500  # ms
-        framing['stride'] = 100 # ms
+        _configure_frame()
         signal = Signal([amp]*10, 5)
         frames = frame.apply(signal)
         zerocross = shorttime.zcr(frames, 5)
         allzero = all(zcr == 0 for zcr in zerocross)
         return allzero
+
+
+def _configure_frame(size=500, stride=100):
+    framing['size'] = 500
+    framing['stride'] = 100
 
 
 def read_signal():
