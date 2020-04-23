@@ -8,7 +8,7 @@ from scipy.io import wavfile
 
 from .context import pyspeech
 from pyspeech.conf import framing
-from pyspeech.dsp import sphparams
+from pyspeech.dsp import shorttime 
 from pyspeech.dsp.processing import Signal
 from pyspeech.dsp import frame
 
@@ -25,7 +25,7 @@ class TestsSphparams(unittest.TestCase):
     def test_st_energy(self):
         signal = read_signal()
         frames = get_frames(signal)
-        energies = sphparams.st_energy(frames)
+        energies = shorttime.st_energy(frames)
         flength = frame.size(signal.fs)
         stride = frame.stride(signal.fs)
         nframes = 1 + math.ceil((signal.size-flength) / stride)
@@ -33,18 +33,18 @@ class TestsSphparams(unittest.TestCase):
 
     def test_negative_energy(self):
         signal = get_frames()
-        energies = list(sphparams.st_energy(signal))
+        energies = list(shorttime.st_energy(signal))
         allpositive = all(egy > 0 for egy in energies)
         self.assertTrue(allpositive)
 
     def test_logenergy(self):
         signal = get_frames()
-        lenergies = sphparams.log_energy(signal)
+        lenergies = shorttime.log_energy(signal)
 
     def test_zrate(self):
         signal = read_signal()
         frames = get_frames(signal)
-        rates = sphparams.zcr(frames, signal.fs)
+        rates = shorttime.zcr(frames, signal.fs)
         allpositive = all(rate >= 0 for rate in rates)
         self.assertTrue(allpositive)
 

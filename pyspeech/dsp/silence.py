@@ -2,7 +2,7 @@ import numpy as np
 
 from . import processing as proc
 from . import frame
-from . import sphparams
+from . import shorttime
 
 
 _IF = 35
@@ -42,7 +42,7 @@ def discriminate(signal, normlen=10):
 
 
 def _get_words(frames, normlen):
-    energies = sphparams.log_energy(frames)
+    energies = shorttime.log_energy(frames)
     norm_egys = energies - max(energies)  # Normalise to 0dB
     itr = _get_itr(energies[:normlen])
     beginwords = _find_energy_peaks(energies, itr)
@@ -70,7 +70,7 @@ def _find_energy_peaks(energies, itr):
 
 
 def _adjust_words(frames, normlen, begins, ends, fs):
-    zcrs = sphparams.zcr(frames, fs)
+    zcrs = shorttime.zcr(frames, fs)
     izct = _get_izct(zcrs[:normlen])
     newbegins = _adjust(begins, zcrs, izct)
     newends = _adjust(ends, np.flip(zcrs), izct)
