@@ -6,6 +6,7 @@ import pyspeech.dsp.processing as sp
 import pyspeech.features.mfcc as mfcc
 from pyspeech import conf
 
+
 class TestsMFCC(unittest.TestCase):
 
     def setUp(self):

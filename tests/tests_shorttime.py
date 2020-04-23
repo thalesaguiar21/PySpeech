@@ -6,14 +6,12 @@ import math
 import numpy as np
 from scipy.io import wavfile
 
+from tests import signal01
 from .context import pyspeech
 from pyspeech.conf import framing
 from pyspeech.dsp import shorttime 
 from pyspeech.dsp.processing import Signal
 from pyspeech.dsp import frame
-
-
-SIGNALPATH = os.path.abspath('tests/voice/OSR_us_000_0011_8k.wav')
 
 
 class TestsShorttime(unittest.TestCase):
@@ -23,12 +21,11 @@ class TestsShorttime(unittest.TestCase):
         framing['stride'] = 10
 
     def test_st_energy(self):
-        signal = read_signal()
-        frames = get_frames(signal)
+        frames = get_frames(signal01)
         energies = shorttime.st_energy(frames)
-        flength = frame.size(signal.fs)
-        stride = frame.stride(signal.fs)
-        nframes = 1 + math.ceil((signal.size-flength) / stride)
+        flength = frame.size(signal01.fs)
+        stride = frame.stride(signal01.fs)
+        nframes = 1 + math.ceil((signal01.size-flength) / stride)
         self.assertEqual(len(energies), nframes)
 
     def test_negative_energy(self):
@@ -50,9 +47,8 @@ class TestsShorttime(unittest.TestCase):
         self.assertTrue(all50)
 
     def test_zrate_allpositive(self):
-        signal = read_signal()
-        frames = get_frames(signal)
-        rates = shorttime.zcr(frames, signal.fs)
+        frames = get_frames(signal01)
+        rates = shorttime.zcr(frames, signal01.fs)
         allpositive = all(rate >= 0 for rate in rates)
         self.assertTrue(allpositive)
 
@@ -89,12 +85,7 @@ def _configure_frame(size=500, stride=100):
     framing['stride'] = 100
 
 
-def read_signal():
-    fs, amps = wavfile.read(SIGNALPATH)
-    return Signal(amps, fs)
-
-
 def get_frames(signal=None):
-    signal = read_signal() if signal is None else signal
+    signal = signal01 if signal is None else signal
     return frame.apply(signal)
 

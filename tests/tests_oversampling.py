@@ -5,28 +5,23 @@ import unittest
 from scipy.io import wavfile
 import numpy as np
 
+from tests import amps01, fs1
 from .context import pyspeech
 from pyspeech.data import oversample
-
-
-SIGNALPATH = os.path.abspath('tests/voice/OSR_us_000_0011_8k.wav')
 
 
 class TestsOversampling(unittest.TestCase):
 
     def test_by_duration_shape(self):
-        fs, signal = wavfile.read(SIGNALPATH)
-        newdata, __ = oversample.by_duration([signal], fs, [1], 500)
+        newdata, __ = oversample.by_duration([amps01], fs1, [1], 500)
         self.assertEqual(newdata.shape, (66, 4000))
 
     def test_by_duration_nlabels(self):
-        fs, signal = wavfile.read(SIGNALPATH)
-        newdata, labels = oversample.by_duration([signal], fs, [1], 500)
+        newdata, labels = oversample.by_duration([amps01], fs1, [1], 500)
         self.assertEqual(newdata.shape[0], labels.size)
 
     def test_by_duration_labels_single(self):
-        fs, signal = wavfile.read(SIGNALPATH)
-        newdata, labels = oversample.by_duration([signal], fs, [1], 500)
+        newdata, labels = oversample.by_duration([amps01], fs1, [1], 500)
         expected_labels = [1] * newdata.shape[0]
         isequal = np.all(expected_labels == labels)
         self.assertTrue(isequal)
@@ -40,14 +35,12 @@ class TestsOversampling(unittest.TestCase):
         self.assertTrue(isequal)
 
     def test_by_duration_negative(self):
-        fs, signal = wavfile.read(SIGNALPATH)
         with self.assertRaises(Warning):
-            oversample.by_duration([signal], fs, [1], -300)
+            oversample.by_duration([amps01], fs1, [1], -300)
 
     def test_by_duration_bigger_than_signal(self):
-        fs, signal = wavfile.read(SIGNALPATH)
         with self.assertRaises(Warning):
-            oversample.by_duration([signal], fs, [1], 40000)
+            oversample.by_duration([amps01], fs1, [1], 40000)
     
     def test_by_shortest(self):
         durations = [12, 10, 3.5, 40]

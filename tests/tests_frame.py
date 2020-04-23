@@ -10,9 +10,6 @@ from pyspeech.dsp.processing import Signal
 from pyspeech import conf
 
 
-SIGNALPATH = os.path.abspath('tests/voice/OSR_us_000_0011_8k.wav')
-
-
 class TestsFrame(unittest.TestCase):
 
     def test_split_19_frames_dim_4(self):
