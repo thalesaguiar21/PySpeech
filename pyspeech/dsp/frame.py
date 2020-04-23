@@ -51,6 +51,5 @@ def stride(freq, size=None):
 
 
 def _ms_to_samples(freq, ms):
-    nsamples = round(ms/1000 * freq)
-    return int(nsamples)
+    return math.ceil(ms/1000 * freq)
 
