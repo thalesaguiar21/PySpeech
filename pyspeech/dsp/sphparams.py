@@ -4,15 +4,16 @@ from . import frame
 
 
 def log_energy(frames):
-    energy = list(st_energy(frames))
-    return 10 * np.log10(energy)
+    energy = st_energy(frames)
+    return 10 * np.log10(1e-5 + energy)
 
 
 def st_energy(frames):
     fixedframes = _fix_frames(frames)
-    wnd_frames = fixedframes * np.hamming(frames.shape[1])
+    __, flen = fixedframes.shape
+    wnd_frames = fixedframes * np.hamming(flen)
     sqr_wnds = wnd_frames ** 2
-    return np.sum(sqr_wnds, axis=1)
+    return np.sum(sqr_wnds, axis=1) / flen
 
 
 def zcr(frames, fs):
