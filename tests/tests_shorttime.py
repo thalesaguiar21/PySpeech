@@ -16,7 +16,7 @@ from pyspeech.dsp import frame
 SIGNALPATH = os.path.abspath('tests/voice/OSR_us_000_0011_8k.wav')
 
 
-class TestsSphparams(unittest.TestCase):
+class TestsShorttime(unittest.TestCase):
 
     def setUp(self):
         framing['size'] = 25
@@ -41,12 +41,50 @@ class TestsSphparams(unittest.TestCase):
         signal = get_frames()
         lenergies = shorttime.log_energy(signal)
 
-    def test_zrate(self):
+    def test_logenergy_zero(self):
+        framing['size'] = 500  # ms
+        framing['stride'] = 100 # ms
+        amps = [0] * 10
+        frames = frame.apply(Signal(amps, 5))
+        lenergies = shorttime.log_energy(frames)
+        all50 = all(legy == -50 for legy in lenergies)
+        self.assertTrue(all50)
+
+    def test_zrate_allpositive(self):
         signal = read_signal()
         frames = get_frames(signal)
         rates = shorttime.zcr(frames, signal.fs)
         allpositive = all(rate >= 0 for rate in rates)
         self.assertTrue(allpositive)
+
+    def test_zcr_ncross(self):
+        framing['size'] = 500  # ms
+        framing['stride'] = 100 # ms
+        amps = np.array([3, 3, 3, -3, -4, -5, 10, 15, 12, -1])
+        fs = 5
+        frames = frame.apply(Signal(amps, fs))
+        reals = [0, 1/3, 1/3, 0, 1/3, 1/3, 0, 1/3]
+        zerocross = shorttime.zcr(frames, fs)
+        equal = all(rate == real for rate, real in zip(zerocross, reals))
+        self.assertTrue(equal)
+
+    def test_zcr_nocrossing_neg(self):
+        allzero = self.zcr_nocrossing(-1)
+        self.assertTrue(allzero)
+
+    def test_zcr_nocrossing_pos(self):
+        notnull = self.zcr_nocrossing(2)
+        positive = self.zcr_nocrossing(0)
+        self.assertEqual(notnull, positive)
+
+    def zcr_nocrossing(self, amp):
+        framing['size'] = 500  # ms
+        framing['stride'] = 100 # ms
+        signal = Signal([amp]*10, 5)
+        frames = frame.apply(signal)
+        zerocross = shorttime.zcr(frames, 5)
+        allzero = all(zcr == 0 for zcr in zerocross)
+        return allzero
 
 
 def read_signal():

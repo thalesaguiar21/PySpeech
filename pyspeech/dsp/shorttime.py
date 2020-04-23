@@ -23,7 +23,7 @@ def zcr(frames, fs):
     lastcol = np.reshape(sgns[:, -1], (nframes, 1))
     difs = np.hstack((sgns[:, 1:], lastcol)) - sgns
     absdifs = np.abs(difs)
-    norm = frame.stride(fs) / 2*flen
+    norm = frame.stride(fs) / (2*flen)
     zcrs = norm * np.sum(absdifs, axis=1)
     return zcrs
 
