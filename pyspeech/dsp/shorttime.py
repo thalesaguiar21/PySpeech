@@ -28,6 +28,27 @@ def zcr(frames, fs):
     return zcrs
 
 
+def sgn(arr):
+    sgns = []
+    for x in arr:
+        if x>= 0:
+            sgns.append(1)
+        else:
+            sgns.append(-1)
+    return sgns
+
+
+def autocorrelation(frames, lag=0):
+    nframes, flen = frames.shape
+    wnd_frames = frames * np.hamming(flen)
+    corr = np.sum(wnd_frames[:, 1:] * wnd_frames[:, :-1], axis=1)
+    sqr_frames = wnd_frames ** 2
+    sum1 = np.sum(sqr_frames[:, :-1], axis=1)
+    sum2 = np.sum(sqr_frames[:, 1:], axis=1)
+    denom = np.sqrt(sum1 * sum2)
+    return corr / denom
+
+
 def _fix_frames(frames):
     if len(frames.shape) == 1:
         return np.array([frames])
@@ -37,12 +58,4 @@ def _fix_frames(frames):
         raise ValueError("Can use only 1 and 2 dimensional arrays!")
 
 
-def sgn(arr):
-    sgns = []
-    for x in arr:
-        if x>= 0:
-            sgns.append(1)
-        else:
-            sgns.append(-1)
-    return sgns
 

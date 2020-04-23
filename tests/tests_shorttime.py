@@ -80,6 +80,24 @@ class TestsShorttime(unittest.TestCase):
         return allzero
 
 
+class TestsAutocorr(unittest.TestCase):
+
+    def setUp(self):
+        framing['size'] = 25
+        framing['stride'] = 10
+
+    def test_simple_signal(self):
+        _configure_frame()
+        amps = np.array([3, 3, 3, -3, -4, -5, 10, 15, 12, -1])
+        fs = 5
+        frames = frame.apply(Signal(amps, fs))
+        reals = [0.158, 0, 0.026, 0.158, -0.094, 0.079, 0.116, 0.092]
+        corrs = shorttime.autocorrelation(frames)
+        equals = [abs(cor-real) < 1e-3 for cor, real in zip(corrs, reals)]
+        self.assertTrue(equals)
+
+
+
 def _configure_frame(size=500, stride=100):
     framing['size'] = 500
     framing['stride'] = 100
