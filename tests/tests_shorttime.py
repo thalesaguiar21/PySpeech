@@ -92,7 +92,7 @@ class TestsAutocorr(unittest.TestCase):
         fs = 5
         frames = frame.apply(Signal(amps, fs))
         reals = [0.158, 0, 0.026, 0.158, -0.094, 0.079, 0.116, 0.092]
-        corrs = shorttime.autocorrelation(frames)
+        corrs = shorttime.autocorr_norm(frames)
         equals = [abs(cor-real) < 1e-3 for cor, real in zip(corrs, reals)]
         self.assertTrue(equals)
 

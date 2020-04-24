@@ -38,15 +38,20 @@ def sgn(arr):
     return sgns
 
 
-def autocorrelation(frames, lag=0):
-    nframes, flen = frames.shape
-    wnd_frames = frames * np.hamming(flen)
-    corr = np.sum(wnd_frames[:, 1:] * wnd_frames[:, :-1], axis=1)
+def autocorr_norm(frames, lag=1):
+    corr, wnd_frames = autocorr(frames, lag)
     sqr_frames = wnd_frames ** 2
     sum1 = np.sum(sqr_frames[:, :-1], axis=1)
     sum2 = np.sum(sqr_frames[:, 1:], axis=1)
     denom = np.sqrt(sum1 * sum2)
     return corr / denom
+
+
+def autocorr(frames, lag=1):
+    nframes, flen = frames.shape
+    wnd_frames = frames * np.hamming(flen)
+    corr = np.sum(wnd_frames[:, :-lag] * wnd_frames[:, lag:], axis=1)
+    return corr, wnd_frames
 
 
 def _fix_frames(frames):
