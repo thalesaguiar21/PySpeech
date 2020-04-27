@@ -86,16 +86,56 @@ class TestsAutocorr(unittest.TestCase):
         framing['size'] = 25
         framing['stride'] = 10
 
-    def test_simple_signal(self):
-        _configure_frame()
-        amps = np.array([3, 3, 3, -3, -4, -5, 10, 15, 12, -1])
-        fs = 5
-        frames = frame.apply(Signal(amps, fs))
+    def test_simple_signal_norm(self):
+        frames = _make_simple_frames()
         reals = [0.158, 0, 0.026, 0.158, -0.094, 0.079, 0.116, 0.092]
         corrs = shorttime.autocorr_norm(frames)
         equals = [abs(cor-real) < 1e-3 for cor, real in zip(corrs, reals)]
         self.assertTrue(equals)
 
+    def test_simple_signal(self):
+        frames = _make_simple_frames()
+        reals = [1.44, 0., 0.24, 2.56, -2.4, 8, 26.4, 13.44]
+        corrs, __ = shorttime.autocorr(frames)
+        equals = [abs(cor-real) < 1e-3 for cor, real in zip(corrs, reals)]
+        self.assertTrue(equals)
+
+    def test_zero_amps(self):
+        amps = [0] * 10
+        _configure_frame()
+        frames = frame.apply(Signal(amps, 5))
+        corrs, __ = shorttime.autocorr(frames)
+        self.assertTrue(all(cor == 0 for cor in corrs))
+
+    def test_zero_amps_norm(self):
+        amps = [0] * 10
+        _configure_frame()
+        frames = frame.apply(Signal(amps, 5))
+        corrs, __ = shorttime.autocorr_norm(frames)
+        self.assertTrue(all(cor == 0 for cor in corrs))
+
+
+    def test_lag_negative(self):
+        frames = _make_simple_frames()
+        data = [-1, 20, 3, 0]
+        for lag in data:
+            try:
+                corrs = shorttime.autocorr_norm(frames, lag)
+                self.fail(f"{lag} did not raised ValueError")
+            except ValueError:
+                pass
+
+
+def _make_simple_frames():
+    _configure_frame()
+    signal = _make_simple_signal()
+    return frame.apply(signal)
+
+
+def _make_simple_signal():
+    amps = np.array([3, 3, 3, -3, -4, -5, 10, 15, 12, -1])
+    fs = 5
+    return Signal(amps, fs)
 
 
 def _configure_frame(size=500, stride=100):

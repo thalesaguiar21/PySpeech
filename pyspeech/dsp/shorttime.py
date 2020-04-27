@@ -49,6 +49,8 @@ def autocorr_norm(frames, lag=1):
 
 def autocorr(frames, lag=1):
     nframes, flen = frames.shape
+    if lag > flen - 1 or lag < 1:
+        raise ValueError('Lag has to be at most the frame samples - 1')
     wnd_frames = frames * np.hamming(flen)
     corr = np.sum(wnd_frames[:, :-lag] * wnd_frames[:, lag:], axis=1)
     return corr, wnd_frames
