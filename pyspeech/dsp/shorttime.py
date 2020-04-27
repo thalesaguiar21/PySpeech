@@ -43,7 +43,7 @@ def autocorr_norm(frames, lag=1):
     sqr_frames = wnd_frames ** 2
     sum1 = np.sum(sqr_frames[:, :-1], axis=1)
     sum2 = np.sum(sqr_frames[:, 1:], axis=1)
-    denom = np.sqrt(sum1 * sum2)
+    denom = np.sqrt(sum1 * sum2) + 1e-15
     return corr / denom
 
 

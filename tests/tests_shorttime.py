@@ -111,7 +111,7 @@ class TestsAutocorr(unittest.TestCase):
         amps = [0] * 10
         _configure_frame()
         frames = frame.apply(Signal(amps, 5))
-        corrs, __ = shorttime.autocorr_norm(frames)
+        corrs = shorttime.autocorr_norm(frames)
         self.assertTrue(all(cor == 0 for cor in corrs))
 
 
