@@ -2,12 +2,12 @@ import numpy as np
 
 
 def apply_at_col(dataset, metric_='minmax'):
-    normalise(dataset.T, metric_)
+    _normalise_by(metric_, dataset.T)
 
 
 def apply(dataset, metric='minmax'):
     for j in range(dataset.shape[0]):
-        normalised_row = normalise_by(metric, dataset[j])
+        normalised_row = _normalise_by(metric, dataset[j])
         dataset[j] = normalised_row
 
 
