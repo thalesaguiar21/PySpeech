@@ -1,6 +1,5 @@
 from scipy.io import wavfile
 import pyspeech.features.mfcc as mfcc
-import pyspeech.features.plp as plp
 import pyspeech.folder as spfold
 import pyspeech.dsp.processing as spproc
 

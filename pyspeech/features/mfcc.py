@@ -3,12 +3,12 @@ from dataclasses import dataclass
 import numpy as np
 import scipy.fftpack as scifft
 
-from pyspeech import conf
-import pyspeech.dsp.frame as frame
-import pyspeech.dsp.processing as sp
-import pyspeech.dsp.spectrum as spec
-import pyspeech.dsp.metrics as smet
-import pyspeech.features.derivs as sder
+from .. import conf
+from ..dsp import frame
+from ..dsp import processing as sp
+from ..dsp import spectrum as spec
+from ..dsp import metrics as smet
+from ..features import derivs as sder
 
 
 def extract(signal, mfcc, melfilter, emph):

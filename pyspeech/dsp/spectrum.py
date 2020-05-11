@@ -1,7 +1,7 @@
 import numpy as np
 
-from pyspeech import conf
-import pyspeech.dsp.processing as sp
+from .. import conf
+from ..dsp import processing as sp
 
 
 def norm_log_power(signal):
