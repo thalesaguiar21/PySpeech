@@ -115,5 +115,5 @@ def _detect_silence(frames, threshold):
 def _db_energy(signals):
     for signal in signals:
         sqr_sum = np.sum(signal ** 2)
-        yield 10 * np.log(sqr_sum)
+        yield 10 * np.log(sqr_sum + 1e-15)
 
