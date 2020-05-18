@@ -38,6 +38,13 @@ def apply(signal, size_=None, stride_=None):
     return paded_amps[mask]
 
 
+def restore(frames, fs):
+    L, R = size(fs), stride(fs)
+    head = frames[0, :R]
+    tail = frames[:, L - R:].reshape(-1)
+    return np.append(head, tail)
+
+
 def size(freq, flen=None):
     if flen is None:
         flen = framing['size']
