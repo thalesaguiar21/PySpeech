@@ -20,9 +20,9 @@ class TestsShorttime(unittest.TestCase):
         framing['size'] = 25
         framing['stride'] = 10
 
-    def test_st_energy(self):
+    def test_energy(self):
         frames = get_frames(signal01)
-        energies = shorttime.st_energy(frames)
+        energies = shorttime.energy(frames)
         flength = frame.size(signal01.fs)
         stride = frame.stride(signal01.fs)
         nframes = 1 + math.ceil((signal01.size-flength) / stride)
@@ -30,7 +30,7 @@ class TestsShorttime(unittest.TestCase):
 
     def test_negative_energy(self):
         signal = get_frames()
-        energies = list(shorttime.st_energy(signal))
+        energies = list(shorttime.energy(signal))
         allpositive = all(egy > 0 for egy in energies)
         self.assertTrue(allpositive)
 
