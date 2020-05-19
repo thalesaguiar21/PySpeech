@@ -13,25 +13,31 @@ from pyspeech import conf
 class TestsFrame(unittest.TestCase):
 
     def test_split_19_frames_dim_4(self):
-        conf.framing['size'] = 200  # ms
-        conf.framing['stride'] = 100  # ms
-        signal = Signal(np.arange(-20, 20), 20)
-        frames = fr.apply(signal)
-        self.assertEqual(19, frames.shape[0])
+        frames = _make_frames(200, 100)
+        self.assertEqual((19, 4), frames.shape)
 
     def test_padding_0(self):
-        conf.framing['size'] = 200  # ms
-        conf.framing['stride'] = 100  # ms
-        signal = Signal(np.arange(-20, 20), 20)
-        frames = fr.apply(signal)
+        frames = _make_frames(200, 100)
         self.assertEqual(76, frames.size)
 
     def test_padding_2_zeros(self):
-        conf.framing['size'] = 300  # ms
-        conf.framing['stride'] = 150  # ms
-        signal = Signal(np.arange(-20, 20), 20)
-        frames = fr.apply(signal)
+        frames = _make_frames(300, 150)
         self.assertEqual(78, frames.size)
         self.assertEqual(0, frames[-1, -1])
         self.assertEqual(0, frames[-1, -2])
+
+
+    def test_overlap(self):
+        frames = _make_frames(200, 100)
+        for n in range(1, frames.shape[0]):
+            has_overlap = frames[n-1, 2:] == frames[n, :2]
+            self.assertTrue(all(has_overlap),
+                            f'No overlap between frames {n-1} and {n}')
+
+
+def _make_frames(size, stride):
+    conf.framing['size'] = size
+    conf.framing['stride'] = stride
+    signal = Signal(np.arange(-20, 20), 20)
+    return fr.apply(signal)
 
