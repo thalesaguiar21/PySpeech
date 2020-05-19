@@ -27,10 +27,12 @@ def apply(signal, size_=None, stride_=None):
          ...
          [22998, 22999]]
     """
+    if signal.size == 0:
+        return np.array([])
     flength = size(signal.fs, size_)
     fstride = stride(signal.fs, stride_)
-    nframes = 1 + math.ceil((signal.size-flength) / fstride)
-    padlen = flength + (nframes*fstride) - signal.size
+    nframes = 1 + math.ceil(abs(signal.size-flength) / fstride)
+    padlen = flength + ((nframes - 1)*fstride - signal.size)
     paded_amps = np.append(signal.amps, np.zeros(padlen))
     indexes = np.tile(np.arange(flength), (nframes, 1))
     striding = np.arange(0, nframes*fstride, fstride).reshape(nframes, 1)
@@ -40,9 +42,8 @@ def apply(signal, size_=None, stride_=None):
 
 def restore(frames, fs):
     L, R = size(fs), stride(fs)
-    head = frames[0, :R]
-    tail = frames[:, L - R:].reshape(-1)
-    return np.append(head, tail)
+    tail = frames[1:, L - R:].reshape(-1)
+    return np.append(frames[0], tail)
 
 
 def size(freq, flen=None):
