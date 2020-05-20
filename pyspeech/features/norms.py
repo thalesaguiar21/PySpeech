@@ -2,7 +2,10 @@ import numpy as np
 
 
 def apply_at_col(dataset, metric_='minmax'):
-    _normalise_by(metric_, dataset.T)
+    normalised_data = np.empty(dataset.shape)
+    for j, col in enumerate(dataset.T):
+        normalised_data[:, j] = _normalise_by(metric_, col)
+    return normalised_data
 
 
 def apply(dataset, metric='minmax'):
