@@ -35,7 +35,9 @@ class TestsSilRemove(unittest.TestCase):
     def test_zero_silence_only_input(self):
         signal = sp.Signal(np.zeros(32000), 16000)
         voiced = silence.remove(signal)
-        self.assertEqual(voiced.size, 0)
+        self.assertGreater(voiced.size, 0)
+        pading = 80
+        self.assertLessEqual(voiced.size - pading, signal.size)
 
     def test_silence_empty_signal(self):
         signal = sp.Signal([], 16000)
@@ -45,12 +47,13 @@ class TestsSilRemove(unittest.TestCase):
     def test_silence_no_sil_high(self):
         signal = sp.Signal(np.zeros(32000) + 1e5, 8000)
         voiced = silence.remove(signal)
-        self.assertGreater(voiced.size, signal.size)
+        pading = 40
+        self.assertLessEqual(voiced.size - pading, signal.size)
 
     def test_silence_low_only(self):
         signal = sp.Signal(np.zeros(8000) + 1e-10, 2000)
         voiced = silence.remove(signal)
-        self.assertEqual(voiced.size, 0)
+        self.assertGreater(voiced.size, 0)
 
 
 def _configure(size=25, stride=10):

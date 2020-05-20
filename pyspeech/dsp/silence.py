@@ -10,7 +10,7 @@ from . import shorttime
 from .. import conf
 
 # Upper silence threshold
-HSdB = -40
+HSdB = -25
 
 
 def remove(signal):
@@ -63,8 +63,9 @@ def _get_norm_egys(frames):
 
 
 def _compute_threshold(egys):
-    med_egys = medfilt(egys, 5)
     until = math.ceil(100 / conf.framing['size'])
-    egyavg, egysig = np.mean(med_egys[:until]), np.std(med_egys[:until])
+    med_egys = medfilt(egys, 5)
+    nonspeech = med_egys[:until]
+    egyavg, egysig = np.mean(nonspeech), np.std(nonspeech)
     return min(HSdB, egyavg + 3*egysig)
 
