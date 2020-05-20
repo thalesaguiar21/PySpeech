@@ -42,5 +42,5 @@ def avg_reduction(feature):
 def mean_normalise(feature):
     f_less_avg = avg_reduction(feature)
     minmax = np.max(feature, axis=0) - np.min(feature, axis=0)
-    return f_less_avg / minmax
+    return f_less_avg / (minmax + 1e-15)
 

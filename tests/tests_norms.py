@@ -66,3 +66,7 @@ class TestsMeanNormalise(unittest.TestCase):
         is_applied = abs(normdata * max(data) + 9.5 - np.array(data)) <= 0.0001
         self.assertTrue(all(is_applied))
 
+    def tests_zero(self):
+        data = np.zeros(50)
+        normdata = norms.mean_normalise(data)
+        self.assertTrue(np.all(normdata == 0))
