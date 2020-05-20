@@ -12,7 +12,7 @@ framing = {
 
 # Cutoff freqeuncy for high pass filter design when removing silence
 fir = {
-    'fc': 0.02,
-    'len': 0.08,
+    'fc': 300,
+    'order': 5,
 }
 

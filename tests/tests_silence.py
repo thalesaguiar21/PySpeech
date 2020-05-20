@@ -20,7 +20,7 @@ class TestsSilRemove(unittest.TestCase):
     def test_leq_signal_size(self):
         voiced = silence.remove(signal01)
         flen = frame.size(signal01.fs, 25)
-        wnd_len = flen / conf.fir['len']
+        wnd_len = flen / conf.fir['order']
         max_len_signal = signal01.size + flen + wnd_len - 2
         self.assertLessEqual(voiced.size,  max_len_signal)
         self.assertGreater(voiced.size, 0)

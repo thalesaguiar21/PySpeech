@@ -1,13 +1,16 @@
 import math
 
 import numpy as np
-from scipy.signal import firwin, butter, medfilt
+from scipy.signal import filtfilt, butter, medfilt
 import matplotlib.pyplot as plt
 
 from . import processing as proc
 from . import frame
 from . import shorttime
 from .. import conf
+
+# Upper silence threshold
+HSdB = -40
 
 
 def remove(signal):
@@ -28,25 +31,17 @@ def remove(signal):
 
 
 def _filter_signal(signal):
-    highpass = _make_filter(signal.fs)
-    famps = np.convolve(signal.amps, highpass)
+    b, a = _make_filter(signal.fs)
+    famps = filtfilt(b, a, signal.amps)
     return proc.Signal(famps, signal.fs)
 
 
 def _make_filter(freq):
-    length = (conf.framing['size'] / 1000) * freq
-    N = math.ceil(length / conf.fir['len'])
-    if not N % 2:
-        N += 1
-
-    n = np.arange(N)
-    sinc = np.sinc(2*conf.fir['fc'] * (n - (N - 1)/2))
-    wndsinc = sinc * np.blackman(N)
-    normsinc = wndsinc / np.sum(wndsinc)
-
-    rev_sinc = -normsinc
-    rev_sinc[int((N - 1)/2)] += 1
-    return rev_sinc
+    nyq = 0.5 * freq
+    # normalise the cutoff frequence with respect to nyquist freq
+    normal_cutoff = conf.fir['fc'] / nyq
+    b, a = butter(conf.fir['order'], normal_cutoff, btype='high', analog=False)
+    return b, a
 
 
 def _detect_silence(frames):
@@ -71,5 +66,5 @@ def _compute_threshold(egys):
     med_egys = medfilt(egys, 5)
     until = math.ceil(100 / conf.framing['size'])
     egyavg, egysig = np.mean(med_egys[:until]), np.std(med_egys[:until])
-    return egyavg + 3*egysig
+    return min(HSdB, egyavg + 3*egysig)
 
