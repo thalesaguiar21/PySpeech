@@ -35,6 +35,12 @@ def _std_score(x):
     return (x - mean) / std
 
 
+def average_reduction(feature):
+    normalised = feature - np.mean(feature, axis=0) + 1e-8
+    return normalised
+
 def mean_normalise(feature):
-    feature -= np.mean(feature, axis=0) + 1e-8
+    f_less_avg = average_reduction(feature)
+    minmax = np.max(feature, axis=0) - np.min(features, axis=0)
+    return f_less_avg / minmax
 
