@@ -41,9 +41,12 @@ def apply(signal, size_=None, stride_=None):
 
 
 def restore(frames, fs):
-    L, R = size(fs), stride(fs)
-    tail = frames[1:, L - R:].reshape(-1)
-    return np.append(frames[0], tail)
+    restored_signal = np.array([])
+    if frames.size > 0:
+        L, R = size(fs), stride(fs)
+        tail = frames[1:, L - R:].reshape(-1)
+        restored_signal = np.append(frames[0], tail)
+    return restored_signal
 
 
 def size(freq, flen=None):

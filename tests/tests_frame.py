@@ -70,6 +70,14 @@ class TestsRestore(unittest.TestCase):
             msg = f'Non-zero padding at {frames.shape[0] + idx}'
             self.assertEqual(0, pad, msg)
 
+    def test_empty_frames(self):
+        restored = fr.restore(np.array([]), 16000)
+        self.assertEqual(restored.size, 0)
+
+    def test_empty_frames_2d(self):
+        restored = fr.restore(np.array([[]]), 8000)
+        self.assertEqual(restored.size, 0)
+
 
 def _make_frames(size, stride, signal=None):
     conf.framing['size'] = size
