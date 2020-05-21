@@ -2,8 +2,9 @@ import numpy as np
 
 
 def apply_at_col(dataset, metric_='minmax'):
-    normalised_data = np.empty(dataset.shape)
-    for j, col in enumerate(dataset.T):
+    data = np.array(dataset)
+    normalised_data = np.empty(data.shape)
+    for j, col in enumerate(data.T):
         normalised_data[:, j] = _normalise_by(metric_, col)
     return normalised_data
 
@@ -26,7 +27,7 @@ def _normalise_by(metric, sample):
 def _minmax(x):
     min_ = x.min()
     max_ = x.max()
-    return (x-min_) / (max_-min_)
+    return (x-min_) / (max_-min_ + 1e-15)
 
 
 def _std_score(x):
@@ -38,6 +39,7 @@ def _std_score(x):
 def avg_reduction(feature):
     normalised = feature - np.mean(feature, axis=0)
     return normalised
+
 
 def mean_normalise(feature):
     f_less_avg = avg_reduction(feature)

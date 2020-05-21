@@ -70,3 +70,20 @@ class TestsMeanNormalise(unittest.TestCase):
         data = np.zeros(50)
         normdata = norms.mean_normalise(data)
         self.assertTrue(np.all(normdata == 0))
+
+    def tests_zero2d(self):
+        data = np.zeros((10, 5))
+        normdata = norms.mean_normalise(data)
+        self.assertTrue(np.all(normdata == 0))
+
+    def tests_close_zero_right(self):
+        data = np.zeros((10, 5)) + 1e-5
+        normdata = norms.mean_normalise(data)
+        self.assertTrue(np.all(normdata == 0))
+
+    def tests_close_zero_left(self):
+        data = np.zeros((10, 5)) - 1e-5
+        normdata = norms.mean_normalise(data)
+        self.assertTrue(np.all(normdata == 0))
+
+
