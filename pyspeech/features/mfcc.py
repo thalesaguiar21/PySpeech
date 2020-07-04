@@ -63,7 +63,7 @@ def _make_log_fbanks(powspec, melfilter, srate):
     fbanks = _make_filter_banks(melfilter, srate)
     fbanks_energies = powspec @ fbanks.T
     bounded_fbanks = np.fmax(fbanks_energies, np.finfo(np.float64).eps)
-    return np.log(bounded_fbanks)
+    return 20 * np.log(bounded_fbanks)
 
 
 def _make_filter_banks(melfilter, srate):
@@ -83,11 +83,14 @@ def _make_bins(melfilter, srate):
 
 def _make_fbanks(melfilter, bins):
     fbanks = np.zeros((melfilter.nfilt, conf.nfft//2 + 1 ))
-    for j in range(melfilter.nfilt):
-        for i in range(int(bins[j]), int(bins[j + 1])):
-            fbanks[j, i] = (i-bins[j]) / (bins[j + 1]-bins[j])
-        for i in range(int(bins[j + 1]), int(bins[j + 2])):
-            fbanks[j, i] = (bins[j + 2]-i) / (bins[j + 2]-bins[j + 1])
+    for j in range(1, melfilter.nfilt + 1):
+        fminus = int(bins[j - 1])
+        f = int(bins[j])
+        fplus = int(bins[j + 1])
+        for i in range(fminus, f):
+            fbanks[j - 1, i] = (i-bins[j - 1]) / (bins[j]-bins[j - 1])
+        for i in range(f, fplus):
+            fbanks[j - 1, i] = (bins[j + 1]-i) / (bins[j + 1]-bins[j])
     return fbanks
 
 

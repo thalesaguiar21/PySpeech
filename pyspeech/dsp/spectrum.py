@@ -17,7 +17,7 @@ def log_power(signal, frame, nfft):
 
 def power(signal):
     mag_spec = magnitude(signal)
-    return 1.0/conf.nfft * mag_spec**2
+    return (1.0/conf.nfft) * (mag_spec**2)
 
 
 def magnitude(wnd_frames):
