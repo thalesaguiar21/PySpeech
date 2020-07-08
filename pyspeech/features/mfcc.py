@@ -35,7 +35,7 @@ def extract(signal, mfcc, melfilter, emph):
 
 def _extract_mfcc_and_energy(powspec, mfcc, melfilter, srate):
     mfccs = _extract_mfcc(powspec, mfcc, melfilter, srate)
-    energies = sder.log_energy(powspec)
+    energies = np.sum(powspec, axis=1)
     return np.hstack((energies.reshape(energies.size, 1), mfccs))
 
 
