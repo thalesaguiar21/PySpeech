@@ -22,8 +22,9 @@ def remove(signal):
     voiced = np.array([])
     if signal.size > 0:
         filtered = _filter_signal(signal)
-        or_frames = frame.apply(filtered)
-        voiced_indexes, __ = _detect_silence(or_frames)
+        or_frames = frame.apply(signal)
+        filtered_frames = frame.apply(filtered)
+        voiced_indexes, __ = _detect_silence(filtered_frames)
         voiced_frames = or_frames[voiced_indexes]
         restored_signal = frame.restore(voiced_frames, signal.fs)
         voiced = proc.Signal(restored_signal, signal.fs)
