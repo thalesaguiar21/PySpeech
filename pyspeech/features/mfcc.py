@@ -61,7 +61,7 @@ def _make_frames_and_window(signal, emph):
 
 def _make_log_fbanks(powspec, melfilter, srate):
     fbanks = _make_filter_banks(melfilter, srate)
-    fbanks_energies = powspec @ fbanks.T
+    fbanks_energies = np.dot(powspec, fbanks.T)
     bounded_fbanks = np.fmax(fbanks_energies, np.finfo(np.float64).eps)
     return 20 * np.log(bounded_fbanks)
 
@@ -73,7 +73,7 @@ def _make_filter_banks(melfilter, srate):
 
 def _make_bins(melfilter, srate):
     if melfilter.highfreq is None:
-        melfilter.highfreq = srate/2
+        melfilter.highfreq = srate / 2
     highmel = smet.hz_to_mel(melfilter.highfreq)
     lowmel = smet.hz_to_mel(melfilter.lowfreq)
     mel_points = np.linspace(lowmel, highmel, melfilter.nfilt + 2)
