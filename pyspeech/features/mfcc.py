@@ -63,7 +63,7 @@ def _make_log_fbanks(powspec, melfilter, srate):
     fbanks = _make_filter_banks(melfilter, srate)
     fbanks_energies = np.dot(powspec, fbanks.T)
     bounded_fbanks = np.fmax(fbanks_energies, np.finfo(np.float64).eps)
-    return 20 * np.log(bounded_fbanks)
+    return np.log10(bounded_fbanks)
 
 
 def _make_filter_banks(melfilter, srate):
