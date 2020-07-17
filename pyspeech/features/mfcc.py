@@ -28,7 +28,7 @@ def extract(signal, mfcc, melfilter, emph):
     powspec = spec.power(wnd_frames)
     feats = _extract_mfcc(powspec, mfcc, melfilter, signal.fs)
     if conf.append_energy:
-        egys = np.sum(wnd_frames, axis=1)
+        egys = np.sum(wnd_frames ** 2, axis=1)
         bounded_egys = np.fmax(egys, np.finfo(np.float64).eps)
         feats = np.hstack((feats, np.log10(bounded_egys[:, None])))
     return feats
