@@ -24,19 +24,13 @@ def extract(signal, mfcc, melfilter, emph):
     Returns:
         The log-energy + MFCC or MFCC
     """
-    powspec = _make_power_spectrum(signal, emph)
-    srate = signal.fs
+    wnd_frames = _make_frames_and_window(signal, emph)
+    powspec = spec.power(wnd_frames)
+    feats = _extract_mfcc(powspec, mfcc, melfilter, signal.fs)
     if conf.append_energy:
-        feats = _extract_mfcc_and_energy(powspec, mfcc, melfilter, srate)
-    else:
-        feats = _extract_mfcc(powspec, mfcc, melfilter, srate)
+        egys = np.sum(wnd_frames, axis=1)
+        feats = np.hstack((feats, egys[:, None]))
     return feats
-
-
-def _extract_mfcc_and_energy(powspec, mfcc, melfilter, srate):
-    mfccs = _extract_mfcc(powspec, mfcc, melfilter, srate)
-    energies = np.sum(powspec, axis=1)
-    return np.hstack((energies.reshape(energies.size, 1), mfccs))
 
 
 def _extract_mfcc(powspec, mfcc, melfilter, srate):
@@ -45,11 +39,6 @@ def _extract_mfcc(powspec, mfcc, melfilter, srate):
     cepstrums_cut = cepstrums[:, :mfcc.ncep]
     lifted_cepstrums = lifter(cepstrums_cut, mfcc.lift)
     return lifted_cepstrums
-
-
-def _make_power_spectrum(signal, emph):
-    wnd_signal = _make_frames_and_window(signal, emph)
-    return spec.power(wnd_signal)
 
 
 def _make_frames_and_window(signal, emph):
