@@ -48,7 +48,7 @@ class TestsShorttime(unittest.TestCase):
 
     def test_zrate_allpositive(self):
         frames = get_frames(signal01)
-        rates = shorttime.zcr(frames, signal01.fs)
+        rates = shorttime.zcr(frames)
         allpositive = all(rate >= 0 for rate in rates)
         self.assertTrue(allpositive)
 
@@ -58,7 +58,7 @@ class TestsShorttime(unittest.TestCase):
         fs = 5
         frames = frame.apply(Signal(amps, fs))
         reals = [0, 1/3, 1/3, 0, 1/3, 1/3, 0, 1/3]
-        zerocross = shorttime.zcr(frames, fs)
+        zerocross = shorttime.zcr(frames)
         equal = all(rate == real for rate, real in zip(zerocross, reals))
         self.assertTrue(equal)
 
@@ -75,7 +75,7 @@ class TestsShorttime(unittest.TestCase):
         _configure_frame()
         signal = Signal([amp]*10, 5)
         frames = frame.apply(signal)
-        zerocross = shorttime.zcr(frames, 5)
+        zerocross = shorttime.zcr(frames)
         allzero = all(zcr == 0 for zcr in zerocross)
         return allzero
 

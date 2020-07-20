@@ -16,26 +16,28 @@ def energy(frames):
     return np.sum(sqr_wnds, axis=1)
 
 
-def zcr(frames, fs):
+def zcr(frames):
+    """ Computes the short-time zcr of the given frames
+
+    Args:
+        frames: 2d numpy array
+
+    Returns:
+        short-time zero-crossin rate of each frame
+    """
     fixedframes = _fix_frames(frames)
     nframes, flen = fixedframes.shape
-    sgns = np.apply_along_axis(sgn, 0, fixedframes)
-    lastcol = np.reshape(sgns[:, -1], (nframes, 1))
-    difs = np.hstack((sgns[:, 1:], lastcol)) - sgns
-    absdifs = np.abs(difs)
-    norm = frame.stride(fs) / (2*flen)
-    zcrs = norm * np.sum(absdifs, axis=1)
+    sgns = _sign(fixedframes)
+    abs_diff = np.abs(sgns[:, 1:] - sgns[:, :-1])
+    zcrs = (1 / (2*flen)) * np.sum(abs_diff, axis=1)
     return zcrs
 
 
-def sgn(arr):
-    sgns = []
-    for x in arr:
-        if x>= 0:
-            sgns.append(1)
-        else:
-            sgns.append(-1)
-    return sgns
+def _sign(X):
+    signs = np.zeros(X.shape)
+    signs[np.where(X >= 0)] = 1
+    signs[np.where(X < 0)] = -1
+    return signs
 
 
 def autocorr_norm(frames, lag=1):
