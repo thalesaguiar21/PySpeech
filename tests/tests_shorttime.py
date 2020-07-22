@@ -30,8 +30,8 @@ class TestsShorttime(unittest.TestCase):
 
     def test_negative_energy(self):
         signal = get_frames()
-        energies = list(shorttime.energy(signal))
-        allpositive = all(egy > 0 for egy in energies)
+        energies = shorttime.energy(signal)
+        allpositive = all(energies > 0)
         self.assertTrue(allpositive)
 
     def test_logenergy(self):
@@ -43,8 +43,8 @@ class TestsShorttime(unittest.TestCase):
         amps = [0] * 10
         frames = frame.apply(Signal(amps, 5))
         lenergies = shorttime.log_energy(frames)
-        all50 = all(legy == -156.53559774527022 for legy in lenergies)
-        self.assertTrue(all50)
+        all150 = all(lenergies == -156.53559774527022)
+        self.assertTrue(all150)
 
 
 class TestsZCR(unittest.TestCase):
@@ -52,8 +52,8 @@ class TestsZCR(unittest.TestCase):
     def test_allpositive(self):
         frames = get_frames(signal01)
         rates = shorttime.zcr(frames, fs1)
-        allpositive = all(rate >= 0 for rate in rates)
-        self.assertTrue(allpositive)
+        all_positive = all(rates >= 0)
+        self.assertTrue(all_positive)
 
     def test_ncross(self):
         _configure_frame()
@@ -63,7 +63,8 @@ class TestsZCR(unittest.TestCase):
         reals = [0, 0.33, 0.33, 0.33, 0.33, 0.33, 0.33, 0.33]
         zerocross = shorttime.zcr(frames, fs)
         abs_err = np.abs(np.array(reals) - zerocross)
-        self.assertTrue(all(abs_err <= 0.01))
+        almost_equal = all(abs_err <= 0.01)
+        self.assertTrue(almost_equal)
 
     def test_nocrossing_neg(self):
         allzero = self.zcr_nocrossing(-1)
@@ -79,7 +80,7 @@ class TestsZCR(unittest.TestCase):
         signal = Signal([amp]*10, 5)
         frames = frame.apply(signal)
         zerocross = shorttime.zcr(frames, 5)
-        allzero = all(zcr == 0 for zcr in zerocross)
+        allzero = all(zerocross == 0)
         return allzero
 
 
@@ -108,7 +109,8 @@ class TestsAutocorr(unittest.TestCase):
         _configure_frame()
         frames = frame.apply(Signal(amps, 5))
         corrs, __ = shorttime.autocorr(frames)
-        self.assertTrue(all(cor == 0 for cor in corrs))
+        is_allzero = all(corrs == 0)
+        self.assertTrue(is_allzero)
 
     def test_zero_amps_norm(self):
         amps = [0] * 10
@@ -116,7 +118,6 @@ class TestsAutocorr(unittest.TestCase):
         frames = frame.apply(Signal(amps, 5))
         corrs = shorttime.autocorr_norm(frames)
         self.assertTrue(all(cor == 0 for cor in corrs))
-
 
     def test_lag_negative(self):
         frames = _make_simple_frames()

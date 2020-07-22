@@ -24,6 +24,7 @@ def zcr(frames, fs=16000):
 
     Args:
         frames: 2d numpy array
+        fs (int): signal sampling rate, defaults to 16000
 
     Returns:
         short-time zero-crossin rate of each frame
