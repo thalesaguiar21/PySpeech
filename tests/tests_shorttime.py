@@ -6,7 +6,7 @@ import math
 import numpy as np
 from scipy.io import wavfile
 
-from tests import signal01
+from tests import signal01, fs1
 from .context import pyspeech
 from pyspeech.conf import framing
 from pyspeech.dsp import shorttime 
@@ -43,12 +43,12 @@ class TestsShorttime(unittest.TestCase):
         amps = [0] * 10
         frames = frame.apply(Signal(amps, 5))
         lenergies = shorttime.log_energy(frames)
-        all50 = all(legy == -50 for legy in lenergies)
+        all50 = all(legy == -156.53559774527022 for legy in lenergies)
         self.assertTrue(all50)
 
     def test_zrate_allpositive(self):
         frames = get_frames(signal01)
-        rates = shorttime.zcr(frames)
+        rates = shorttime.zcr(frames, fs1)
         allpositive = all(rate >= 0 for rate in rates)
         self.assertTrue(allpositive)
 
@@ -57,10 +57,10 @@ class TestsShorttime(unittest.TestCase):
         amps = np.array([3, 3, 3, -3, -4, -5, 10, 15, 12, -1])
         fs = 5
         frames = frame.apply(Signal(amps, fs))
-        reals = [0, 1/3, 1/3, 0, 1/3, 1/3, 0, 1/3]
-        zerocross = shorttime.zcr(frames)
-        equal = all(rate == real for rate, real in zip(zerocross, reals))
-        self.assertTrue(equal)
+        reals = [0, 0.33, 0.33, 0.33, 0.33, 0.33, 0.33, 0.33]
+        zerocross = shorttime.zcr(frames, fs)
+        abs_err = np.abs(np.array(reals) - zerocross)
+        self.assertTrue(all(abs_err <= 0.01))
 
     def test_zcr_nocrossing_neg(self):
         allzero = self.zcr_nocrossing(-1)
@@ -75,7 +75,7 @@ class TestsShorttime(unittest.TestCase):
         _configure_frame()
         signal = Signal([amp]*10, 5)
         frames = frame.apply(signal)
-        zerocross = shorttime.zcr(frames)
+        zerocross = shorttime.zcr(frames, 5)
         allzero = all(zcr == 0 for zcr in zerocross)
         return allzero
 

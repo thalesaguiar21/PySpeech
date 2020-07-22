@@ -4,11 +4,14 @@ from . import frame
 
 
 def log_energy(frames):
+    """ Computes the normalised short-time energy of the given frames """
     energies = energy(frames)
-    return 10 * np.log10(1e-5 + energies)
+    bounded_egys = np.fmax(energies, np.finfo(np.float64).eps)
+    return 10 * np.log10(bounded_egys)
 
 
 def energy(frames):
+    """ Computes the short-time energy """
     fixedframes = _fix_frames(frames)
     __, flen = fixedframes.shape
     wnd_frames = fixedframes * np.hamming(flen)
@@ -16,7 +19,7 @@ def energy(frames):
     return np.sum(sqr_wnds, axis=1)
 
 
-def zcr(frames):
+def zcr(frames, fs=16000):
     """ Computes the short-time zcr of the given frames
 
     Args:
@@ -26,10 +29,13 @@ def zcr(frames):
         short-time zero-crossin rate of each frame
     """
     fixedframes = _fix_frames(frames)
-    nframes, flen = fixedframes.shape
+    fstride = frame.stride(fs)
     sgns = _sign(fixedframes)
-    abs_diff = np.abs(sgns[:, 1:] - sgns[:, :-1])
-    zcrs = (1 / (2*flen)) * np.sum(abs_diff, axis=1)
+    sample_before = np.roll(sgns[:, fstride - 1, None], 1)
+    sample_before[0] = sgns[0, 0]
+    shifted_sgns = np.hstack((sample_before, sgns[:, :-1]))
+    abs_diff = np.abs(sgns - shifted_sgns)
+    zcrs = (1 / (2*frames.shape[1])) * np.sum(abs_diff, axis=1)
     return zcrs
 
 
@@ -41,6 +47,7 @@ def _sign(X):
 
 
 def autocorr_norm(frames, lag=1):
+    """ Computes the normalised autocorrelation """
     corr, wnd_frames = autocorr(frames, lag)
     sqr_frames = wnd_frames ** 2
     sum1 = np.sum(sqr_frames[:, :-lag], axis=1)
