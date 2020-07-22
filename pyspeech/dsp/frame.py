@@ -61,6 +61,17 @@ def stride(freq, size=None):
     return _ms_to_samples(freq, size)
 
 
+def overlap():
+    return framing['size'] - framing['stride']
+
+
 def _ms_to_samples(freq, ms):
     return math.ceil(ms/1000 * freq)
+
+
+def get_duration(frames, freq):
+    nframes, fr_len = frames.shape
+    signal_size = (nframes - 1)*stride(freq) + size(freq)
+    duration = signal_size / freq
+    return duration
 

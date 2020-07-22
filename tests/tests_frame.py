@@ -79,6 +79,19 @@ class TestsRestore(unittest.TestCase):
         self.assertEqual(restored.size, 0)
 
 
+class TestsDuration(unittest.TestCase):
+
+    def test_with_shift(self):
+        frames = _make_frames(25, 10)
+        duration = fr.get_duration(frames, 20)
+        self.assertAlmostEqual(2, duration)
+
+    def test_without_overlap(self):
+        frames = _make_frames(25, 25)
+        duration = fr.get_duration(frames, 20)
+        self.assertAlmostEqual(2, duration)
+
+
 def _make_frames(size, stride, signal=None):
     conf.framing['size'] = size
     conf.framing['stride'] = stride
