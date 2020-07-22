@@ -8,6 +8,7 @@ from ..dsp import frame
 from ..dsp import processing as sp
 from ..dsp import spectrum as spec
 from ..dsp import metrics as smet
+from ..dsp import shorttime as st
 from ..features import derivs as sder
 
 
@@ -24,13 +25,12 @@ def extract(signal, mfcc, melfilter, emph):
     Returns:
         The log-energy + MFCC or MFCC
     """
-    wnd_frames = _make_frames_and_window(signal, emph)
+    wnd_frames, or_frames = _make_frames_and_window(signal, emph)
     powspec = spec.power(wnd_frames)
     feats = _extract_mfcc(powspec, mfcc, melfilter, signal.fs)
     if conf.append_energy:
-        egys = np.sum(wnd_frames ** 2, axis=1)
-        bounded_egys = np.fmax(egys, np.finfo(np.float64).eps)
-        feats = np.hstack((feats, np.log10(bounded_egys[:, None])))
+        legy = st.log_energy(or_frames)[:, None]
+        feats = np.hstack((feats, legy))
     return feats
 
 
@@ -46,7 +46,7 @@ def _make_frames_and_window(signal, emph):
     emph_signal = sp.emphasize(signal, emph)
     frames = frame.apply(signal)
     ham_frames = frames * np.hamming(frames.shape[1])
-    return ham_frames
+    return ham_frames, frames 
 
 
 def _make_log_fbanks(powspec, melfilter, srate):
