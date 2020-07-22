@@ -10,7 +10,8 @@ from . import shorttime
 from .. import conf
 
 # Upper silence threshold
-HSdB = -25
+_ITU = -35 # dB
+_IF = 35
 
 
 def remove(signal):
@@ -24,7 +25,7 @@ def remove(signal):
         filtered = _filter_signal(signal)
         or_frames = frame.apply(signal)
         filtered_frames = frame.apply(filtered)
-        voiced_indexes, __ = _detect_silence(filtered_frames)
+        voiced_indexes = _detect_silence(filtered_frames, signal.fs)
         voiced_frames = or_frames[voiced_indexes]
         restored_signal = frame.restore(voiced_frames, signal.fs)
         voiced = proc.Signal(restored_signal, signal.fs)
@@ -45,17 +46,18 @@ def _make_filter(freq):
     return b, a
 
 
-def _detect_silence(frames):
-    egys = _get_norm_egys(frames)
-    threshold = _compute_threshold(egys)
-    non_sil_indexes = []
-    sil_indexes = []
-    for i, egy in enumerate(egys):
-        if egy > threshold:
-            non_sil_indexes.append(i)
-        else:
-            sil_indexes.append(i)
-    return non_sil_indexes, sil_indexes
+def _detect_silence(frames, fs):
+    zero_peak_egys = _get_norm_egys(frames)
+    zcrs = shorttime.zcr(frames, fs)
+    egy_threshold = _compute_threshold(_ITU, zero_peak_egys)
+    zcr_threshold = _compute_threshold(_IF, zcrs)
+    voiced_frames = []
+    for i in range(frames.shape[0]):
+       is_speech = zero_peak_egys[i] > egy_threshold
+       is_voiced = zcrs[i] < zcr_threshold
+       if is_speech and is_voiced:
+           voiced_frames.append(i)
+    return voiced_frames
 
 
 def _get_norm_egys(frames):
@@ -63,10 +65,10 @@ def _get_norm_egys(frames):
     return egys - np.max(egys)
 
 
-def _compute_threshold(egys):
+def _compute_threshold(fixed, signal_rep):
     until = math.ceil(100 / conf.framing['size'])
-    med_egys = medfilt(egys, 5)
-    nonspeech = med_egys[:until]
-    egyavg, egysig = np.mean(nonspeech), np.std(nonspeech)
-    return min(HSdB, egyavg + 3*egysig)
+    med_values = medfilt(signal_rep, 5)
+    nonspeech = med_values[:until]
+    avg, sig = np.mean(nonspeech), np.std(nonspeech)
+    return max(fixed, avg + 3*sig)
 
