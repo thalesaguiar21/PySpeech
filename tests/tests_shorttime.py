@@ -46,13 +46,16 @@ class TestsShorttime(unittest.TestCase):
         all50 = all(legy == -156.53559774527022 for legy in lenergies)
         self.assertTrue(all50)
 
-    def test_zrate_allpositive(self):
+
+class TestsZCR(unittest.TestCase):
+
+    def test_allpositive(self):
         frames = get_frames(signal01)
         rates = shorttime.zcr(frames, fs1)
         allpositive = all(rate >= 0 for rate in rates)
         self.assertTrue(allpositive)
 
-    def test_zcr_ncross(self):
+    def test_ncross(self):
         _configure_frame()
         amps = np.array([3, 3, 3, -3, -4, -5, 10, 15, 12, -1])
         fs = 5
@@ -62,11 +65,11 @@ class TestsShorttime(unittest.TestCase):
         abs_err = np.abs(np.array(reals) - zerocross)
         self.assertTrue(all(abs_err <= 0.01))
 
-    def test_zcr_nocrossing_neg(self):
+    def test_nocrossing_neg(self):
         allzero = self.zcr_nocrossing(-1)
         self.assertTrue(allzero)
 
-    def test_zcr_nocrossing_pos(self):
+    def test_nocrossing_pos(self):
         notnull = self.zcr_nocrossing(2)
         positive = self.zcr_nocrossing(0)
         self.assertEqual(notnull, positive)
