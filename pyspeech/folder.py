@@ -5,6 +5,7 @@ def find_files(folder_path, extension):
     dt_files = []
     for dirpath, dirname, fnames in os.walk(folder_path):
         dirname.sort()
+        fnames.sort()
         for fname in fnames:
             if fname.lower().endswith('.' + extension.lower()):
                 dt_files.append(os.path.join(dirpath, fname))
