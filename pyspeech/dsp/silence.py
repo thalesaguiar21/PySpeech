@@ -66,7 +66,7 @@ def _get_norm_egys(frames):
 
 
 def _compute_threshold(fixed, signal_rep):
-    until = math.ceil(100 / conf.framing['size'])
+    until = math.ceil(100 / conf.framing['stride'])
     med_values = medfilt(signal_rep, 5)
     nonspeech = med_values[:until]
     avg, sig = np.mean(nonspeech), np.std(nonspeech)
