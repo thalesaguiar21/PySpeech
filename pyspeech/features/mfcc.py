@@ -24,35 +24,43 @@ def extract(signal, emph, nfilt, spam, nceps=13, nlift=22):
     Returns:
         A Nframes X nfilt array of Mel-Frequency Cepstrum Coefficients
     """
-    flen, fstride = frame.size(signal.fs), frame.stride(signal.fs)
     user_nfft = conf.nfft
-    conf.nfft = _next_pow2(flen)
+    conf.nfft = _find_best_nfft(signal.fs)
     K = conf.nfft//2 + 1
+    if conf.append_energy:
+        feats = _compute_mfcc_and_energy(signal, emph, nfilt, spam, nceps,
+                                         nlift, K)
+    else:
+        feats = _compute_mfcc(signal, emph, nfilt, spam, nceps, nlift, K)
+    conf.nfft = user_nfft
+    return  feats
 
+
+def _find_best_nfft(fs):
+    flen = frame.size(fs)
+    return 1 << (flen-1).bit_length()
+
+
+def _compute_mfcc_and_energy(signal, emph, nfilt, spam, nceps, nlift, K):
+    mfccs = _compute_mfcc(signal, emph, nfilt, spam, nceps, nlift, K)
+    frames = frame.apply(signal)
+    egys = shorttime.log_energy(frames)[:, None]
+    return np.hstack((mfccs, egys))
+
+
+def _compute_mfcc(signal, emph, nfilt, spam, nceps, nlift, K):
     emph_signal = processing.emphasize(signal, emph)
     frames = frame.apply(emph_signal)
-    wnd_frames = frames * np.hamming(flen)
+    wnd_frames = frames * np.hamming(frames.shape[1])
     magnitude_spec = spectrum.magnitude(wnd_frames)
     trifilters = _make_filter_banks(nfilt, K, signal.fs, spam)
-
     filter_banks = trifilters @ magnitude_spec.T
     # Log-fbanks converted back to frames as rows
     log_fbanks = np.log(filter_banks).T
     ceps = scipy.fft.dct(log_fbanks, type=3, n=nceps, norm='ortho', axis=1)
     lifts = _cep_lift(nceps, nlift)
     lifted_ceps = ceps * lifts
-
-    mfccs = lifted_ceps[:, 1:]
-    conf.nfft = user_nfft
-    if conf.append_energy:
-        egys = shorttime.log_energy(frames)[:, None]
-        return np.hstack((mfccs, egys))
-    # Rollback to user defined nfft
-    return mfccs
-
-
-def _next_pow2(x):
-    return 1 << (x-1).bit_length()
+    return lifted_ceps[:, 1:]
 
 
 def _make_filter_banks(nfilt, filt_len, fs, spam):
