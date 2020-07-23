@@ -14,6 +14,13 @@ _ITU = -35 # dB
 _IF = 35
 
 
+def detect(signal):
+    filtered_signal = _filter_signal(signal)
+    frames = frame.apply(filtered_signal)
+    voiced_indexes = _detect_silence(frames, signal.fs)
+    return voiced_indexes
+
+
 def remove(signal):
     """ Removes silence based on a simple dB (short-time energy) threshold
 
