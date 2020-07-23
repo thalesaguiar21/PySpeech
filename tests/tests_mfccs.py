@@ -3,7 +3,7 @@ import numpy as np
 
 from .context import pyspeech
 import pyspeech.dsp.processing as sp
-import pyspeech.features.newmfcc as mfcc
+import pyspeech.features.mfcc as mfcc
 from pyspeech import conf
 
 
