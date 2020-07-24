@@ -55,7 +55,7 @@ def _make_filter(freq):
 
 def _detect_silence(frames, fs):
     zero_peak_egys = _get_norm_egys(frames)
-    zcrs = shorttime.zcr(frames, fs)
+    zcrs = frame.stride(fs) * shorttime.zcr(frames, fs)
     egy_threshold = _compute_threshold(_ITU, zero_peak_egys)
     zcr_threshold = _compute_threshold(_IF, zcrs)
     voiced_frames = []
