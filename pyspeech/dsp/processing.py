@@ -2,10 +2,10 @@
 emphasis, framing, and power spectrums. Besides a few data classes to
 encapsulate arguments.
 """
-import math
 import numpy as np
 
 
+from . import frame
 from ..conf import framing
 
 
@@ -24,11 +24,13 @@ class Signal:
 
 
 def emphasize(signal, gain):
+    """ Apply an emphasis into the signal corresponding to the gain """
     emph_amps = np.append(signal.amps[0], signal.amps[1:] - gain*signal.amps[:-1])
     return Signal(emph_amps, signal.fs)
 
 
 def normalise(signal):
+    """ Normalise the amplitudes to [-1, 1] """
     max_amp = np.absolute(signal.amps).max()
     if max_amp == 0.0:
         normalised_amps = signal.amps
@@ -38,12 +40,17 @@ def normalise(signal):
 
 
 def find_best_nfft(freq, flen=None):
-    flen = frame_len(framing['size'], freq) if flen is None else flen
+    """ Computes the minimun number of points to achive the Nyquist frequency
+
+    Args:
+        freq: the signal sampling frequency
+        flen: the frame length, defaults to None
+            if None, uses the 'size' in configuration file
+    """
+    flen = frame.size(framing['size'], freq) if flen is None else flen
     if freq > 0 and flen > 0:
         nfft = 1
         while nfft < freq * flen:
             nfft *= 2
         return nfft
-    else:
-        raise ValueError('Frame length and frequency must be greater than zero')
-
+    raise ValueError('Frame length and frequency must be greater than zero')
