@@ -1,3 +1,4 @@
+""" Conversion functions """
 import numpy as np
 
 
@@ -7,4 +8,3 @@ def hz2mel(hz):
 
 def mel2hz(mel):
     return 700*np.exp(mel/1127) - 700
-
