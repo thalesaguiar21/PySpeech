@@ -1,8 +1,10 @@
+""" This module encapsulates functions and mothods to either detect and remove
+silence segments of speech signals
+"""
 import math
 
 import numpy as np
 from scipy.signal import filtfilt, butter, medfilt
-import matplotlib.pyplot as plt
 
 from . import processing as proc
 from . import frame
@@ -15,6 +17,7 @@ _IF = 35
 
 
 def detect(signal):
+    """ Detects and return the silence-only frames of the speech signal """
     filtered_signal = _filter_signal(signal)
     frames = frame.apply(filtered_signal)
     voiced_indexes = _detect_silence(frames, signal.fs)
@@ -25,7 +28,7 @@ def remove(signal):
     """ Removes silence based on a simple dB (short-time energy) threshold
 
     Returns:
-        A new signal composed of voiced segments from the input
+    A new signal composed of voiced segments from the input
     """
     voiced = np.array([])
     if signal.size > 0:
@@ -40,8 +43,8 @@ def remove(signal):
 
 
 def _filter_signal(signal):
-    b, a = _make_filter(signal.fs)
-    famps = filtfilt(b, a, signal.amps)
+    nums, denom = _make_filter(signal.fs)
+    famps = filtfilt(nums, denom, signal.amps)
     return proc.Signal(famps, signal.fs)
 
 
@@ -49,21 +52,21 @@ def _make_filter(freq):
     nyq = 0.5 * freq
     # normalise the cutoff frequence with respect to nyquist freq
     normal_cutoff = conf.fir['fc'] / nyq
-    b, a = butter(conf.fir['order'], normal_cutoff, btype='high', analog=False)
-    return b, a
+    filt = butter(conf.fir['order'], normal_cutoff, btype='high', analog=False)
+    return filt
 
 
-def _detect_silence(frames, fs):
+def _detect_silence(frames, freq):
     zero_peak_egys = _get_norm_egys(frames)
-    zcrs = frame.stride(fs) * shorttime.zcr(frames, fs)
+    zcrs = frame.stride(freq) * shorttime.zcr(frames, freq)
     egy_threshold = _compute_threshold(_ITU, zero_peak_egys)
     zcr_threshold = _compute_threshold(_IF, zcrs)
     voiced_frames = []
     for i in range(frames.shape[0]):
-       is_speech = zero_peak_egys[i] > egy_threshold
-       is_voiced = zcrs[i] < zcr_threshold
-       if is_speech and is_voiced:
-           voiced_frames.append(i)
+        is_speech = zero_peak_egys[i] > egy_threshold
+        is_voiced = zcrs[i] < zcr_threshold
+        if is_speech and is_voiced:
+            voiced_frames.append(i)
     return voiced_frames
 
 
@@ -78,4 +81,3 @@ def _compute_threshold(fixed, signal_rep):
     nonspeech = med_values[:until]
     avg, sig = np.mean(nonspeech), np.std(nonspeech)
     return max(fixed, avg + 3*sig)
-
