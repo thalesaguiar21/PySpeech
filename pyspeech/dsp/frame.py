@@ -1,5 +1,4 @@
-import os
-
+""" Functions to split and restore signals into frames fo given milliseconds """
 import math
 import numpy as np
 
@@ -40,28 +39,42 @@ def apply(signal, size_=None, stride_=None):
     return paded_amps[mask]
 
 
-def restore(frames, fs):
+def restore(frames, freq):
+    """ Concatenates the frames into a single signal
+
+    Args:
+        frames: the frammed signal
+        freq: the signal sampling rate
+    """
     restored_signal = np.array([])
     if frames.size > 0:
-        L, R = size(fs), stride(fs)
-        tail = frames[1:, L - R:].reshape(-1)
+        left, right = size(freq), stride(freq)
+        tail = frames[1:, left - right:].reshape(-1)
         restored_signal = np.append(frames[0], tail)
     return restored_signal
 
 
 def size(freq, flen=None):
+    """ The size in samples of the frame
+
+    Args:
+        freq: the sampling frequency
+        flen: the length of the frame, optional, defaults to None
+    """
     if flen is None:
         flen = framing['size']
     return _ms_to_samples(freq, flen)
 
 
-def stride(freq, size=None):
-    if size is None:
-        size = framing['stride']
-    return _ms_to_samples(freq, size)
+def stride(freq, slen=None):
+    """ The stride in samples of the frame """
+    if slen is None:
+        slen = framing['stride']
+    return _ms_to_samples(freq, slen)
 
 
 def overlap():
+    """ The overlap in samples of the current frames """
     return framing['size'] - framing['stride']
 
 
