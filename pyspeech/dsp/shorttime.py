@@ -1,3 +1,4 @@
+""" Provides functions to compute short-time representations of signals """
 import numpy as np
 
 from . import frame
@@ -19,7 +20,7 @@ def energy(frames):
     return np.sum(sqr_wnds, axis=1)
 
 
-def zcr(frames, fs=16000):
+def zcr(frames, freq=16000):
     """ Computes the short-time zcr of the given frames
 
     Args:
@@ -30,7 +31,7 @@ def zcr(frames, fs=16000):
         short-time zero-crossin rate of each frame
     """
     fixedframes = _fix_frames(frames)
-    fstride = frame.stride(fs)
+    fstride = frame.stride(freq)
     sgns = _sign(fixedframes)
     sample_before = np.roll(sgns[:, fstride - 1, None], 1)
     sample_before[0] = sgns[0, 0]
@@ -40,10 +41,10 @@ def zcr(frames, fs=16000):
     return zcrs
 
 
-def _sign(X):
-    signs = np.zeros(X.shape)
-    signs[np.where(X >= 0)] = 1
-    signs[np.where(X < 0)] = -1
+def _sign(mat):
+    signs = np.zeros(mat.shape)
+    signs[np.where(mat >= 0)] = 1
+    signs[np.where(mat < 0)] = -1
     return signs
 
 
@@ -58,7 +59,8 @@ def autocorr_norm(frames, lag=1):
 
 
 def autocorr(frames, lag=1):
-    nframes, flen = frames.shape
+    """ Computes the autocorrelation coefficients between frames """
+    __, flen = frames.shape
     if lag > flen - 1 or lag < 1:
         raise ValueError('Lag has to be at most the frame samples - 1')
     wnd_frames = frames * np.hamming(flen)
@@ -67,12 +69,8 @@ def autocorr(frames, lag=1):
 
 
 def _fix_frames(frames):
+    if frames.ndim > 2:
+        raise ValueError("Can use only 1 and 2 dimensional arrays!")
     if len(frames.shape) == 1:
         return np.array([frames])
-    elif len(frames.shape) == 2:
-        return frames
-    else:
-        raise ValueError("Can use only 1 and 2 dimensional arrays!")
-
-
-
+    return frames
